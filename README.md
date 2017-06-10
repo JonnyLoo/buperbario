@@ -1,5 +1,6 @@
-# buperbario 
-#
+# buperbario
 
 Buper Bario Bros
-*kinda like super mario*
+
+
+~~kinda like super mario~~

@@ -1,4 +1,0 @@
-World::World() {
-
-	
-}

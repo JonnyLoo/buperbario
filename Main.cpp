@@ -2,26 +2,26 @@
 using namespace std;
 
 int main() {
-	cout << "Itsa b BARIO!!!";
-	int gameState = 1;
-	while(gameState) {
-
-		gameLoop();
-	}
-	return 0;
-}
-
-void gameLoop() {
-
-
-}
-
-void update() {
-
-
-}
-
-void render() {
-
 	
+	Menu menu;
+	menu.load;
+
+	if (menu.getDecision() == 1) {
+
+		menu.close();
+		GameManager game;
+		game.initialize();
+
+		//relay input and output to gamemanager
+		while (game.notFinished()) {
+
+			game.update();
+		}
+	}
+	else if (menu.getDecision() == 2) {
+
+		menu.close();
+	}
+
+	return 0;
 }

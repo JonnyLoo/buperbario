@@ -1,6 +1,23 @@
+class GameManager {
+
+public:
+	GameManager();
+};
+
 class Level {
 
 public:
 	Level();
-	void createLevel();
+};
+
+class Floor {
+
+public:
+	Floor();
+};
+
+class Pipe {
+
+public:
+	Pipe();
 };

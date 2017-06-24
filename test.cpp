@@ -47,7 +47,7 @@ int main() {
 
 	
 	//game physics
-	float gravity = 9.;
+	float gravity = 2.;
 	float barioXVel = 0.;
 	float barioYVel = 0.;
 	float xMax = 9.;
@@ -70,11 +70,12 @@ int main() {
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 
-			barioYVel -= 15.;
-			onground = false;
-		}
+			if(onground) {
 
-		if(bario.getPosition().y )
+				barioYVel -= 25.;
+				onground = false;
+			}
+		}
 
 		if(onground) {
 
@@ -104,6 +105,11 @@ int main() {
 		}
 
 		bario.move(barioXVel, barioYVel);
+
+		if(bario.getPosition().y + gravity >= window.getSize().y - 55) {
+
+			onground = true;
+		}
 
 		window.clear(sf::Color::Black);
 		window.setView(view);

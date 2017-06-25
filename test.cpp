@@ -1,6 +1,22 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+sf::IntRect changeSprite(char state)
+{
+	switch(state) {
+		case 's': //standing 
+			return sf::IntRect(10, 10, 20, 20);
+			break;
+		case 'm': //moving
+			return sf::IntRect(27, 10, 20, 20);
+		case 'j': //jumping
+			return sf::IntRect(113, 10, 20, 20);
+		default:
+			return sf::IntRect(10, 10, 20, 20);
+
+	}
+}
+
 int main() {
 
 	//create window
@@ -16,7 +32,7 @@ int main() {
 	//bario sprite
 	sf::Sprite bario;
 	bario.setTexture(bariot);
-	bario.setTextureRect(sf::IntRect(10, 10, 20, 20));
+	bario.setTextureRect(changeSprite('s'));
 	bario.setPosition(sf::Vector2f(20, window.getSize().y - 55));
 
 	//level layout
@@ -70,7 +86,7 @@ int main() {
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 
-			if(onground) {
+			if (onground) {
 
 				barioYVel -= 25.;
 				onground = false;
@@ -87,12 +103,25 @@ int main() {
 			barioXVel += xAccel;
 			if(barioXVel > xMax)
 				barioXVel = xMax;
+
+			bario.setTextureRect(changeSprite('m'));
+			if (bario.getScale().x == -1)
+			{
+				bario.setScale(1.f, 1.f);
+			}
+			
 		}
 		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 
 			barioXVel -= xAccel;
 			if(barioXVel < -xMax)
 				barioXVel = -xMax;
+
+			bario.setTextureRect(changeSprite('m'));
+			if (bario.getScale().x == 1)
+			{
+				bario.setScale(-1.f, 1.f);
+			}
 		}
 		else {
 
@@ -102,6 +131,8 @@ int main() {
 				barioXVel++;
 			else
 				barioXVel = 0;
+
+			bario.setTextureRect(changeSprite('s'));
 		}
 
 		bario.move(barioXVel, barioYVel);
@@ -109,6 +140,10 @@ int main() {
 		if(bario.getPosition().y + gravity >= window.getSize().y - 55) {
 
 			onground = true;
+		}
+		else
+		{
+			bario.setTextureRect(changeSprite('j'));
 		}
 
 		window.clear(sf::Color::Black);

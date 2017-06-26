@@ -1,18 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 
 sf::IntRect changeSprite(char state)
 {
 	switch(state) {
 		case 's': //standing 
-			return sf::IntRect(10, 10, 20, 20);
+			return sf::IntRect(11, 10, 19, 20);
 			break;
 		case 'm': //moving
-			return sf::IntRect(27, 10, 20, 20);
+			return sf::IntRect(28, 10, 19, 20);
 		case 'j': //jumping
-			return sf::IntRect(113, 10, 20, 20);
+			return sf::IntRect(114, 10, 19, 20);
 		default:
-			return sf::IntRect(10, 10, 20, 20);
+			return sf::IntRect(11, 10, 19, 20);
 
 	}
 }
@@ -23,7 +24,7 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1400, 900), "Buper Bario");
 
 	//create view
-	sf::View view(sf::Vector2f(400, 600), sf::Vector2f(800, 600));
+	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
 	//vector for bario walking animations
 	sf::Texture bariot;
@@ -34,20 +35,55 @@ int main() {
 	bario.setTexture(bariot);
 	bario.setTextureRect(changeSprite('s'));
 	bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
+	bario.setOrigin(9.5, 10);
 
 	//load tile set
+	//make into an array of sprites
 	sf::Texture tiles;
 	tiles.loadFromFile("groundtiles.png");
+	sf::Sprite ttile;
+	ttile.setTexture(tiles);
+	ttile.setTextureRect(sf::IntRect(122, 151, 14, 14));
+	ttile.setPosition(sf::Vector2f(100, window.getSize().y - 35));
+	ttile.setScale(20 / ttile.getLocalBounds().width, 20 / ttile.getLocalBounds().height);
+
 	sf::Sprite tile;
 	tile.setTexture(tiles);
-	tile.setTextureRect(sf::IntRect(122, 152, 15, 15));
-	tile.setPosition(sf::Vector2f(20, window.getSize().y - 25));
+	tile.setTextureRect(sf::IntRect(122, 151, 14, 14));
+	tile.setPosition(sf::Vector2f(20, window.getSize().y - 35));
+
+	sf::Sprite tile2;
+	tile2.setTexture(tiles);
+	tile2.setTextureRect(sf::IntRect(122, 169, 14, 14));
+	tile2.setPosition(sf::Vector2f(20, window.getSize().y - 22));
+
+	sf::Sprite tile3;
+	tile3.setTexture(tiles);
+	tile3.setTextureRect(sf::IntRect(122, 169, 14, 14));
+	tile3.setPosition(sf::Vector2f(20, window.getSize().y - 9));
+
+	sf::Sprite tile4;
+	tile4.setTexture(tiles);
+	tile4.setTextureRect(sf::IntRect(122, 151, 14, 14));
+	tile4.setPosition(sf::Vector2f(33, window.getSize().y - 35));
+
+	sf::Sprite tile5;
+	tile5.setTexture(tiles);
+	tile5.setTextureRect(sf::IntRect(122, 169, 14, 14));
+	tile5.setPosition(sf::Vector2f(33, window.getSize().y - 22));
+
+	sf::Sprite tile6;
+	tile6.setTexture(tiles);
+	tile6.setTextureRect(sf::IntRect(122, 169, 14, 14));
+	tile6.setPosition(sf::Vector2f(33, window.getSize().y - 9));
 
 	//level layout
 	int numTilesX = window.getSize().x / tile.getLocalBounds().width + 2;
 	int numTilesY = window.getSize().y / tile.getLocalBounds().height + 2;
 	std::vector< std::vector<float> > map;
 	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
+
+	std::cout << numTilesX << std::endl << numTilesY << std::endl;
 
    /*{{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
 	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
@@ -67,7 +103,7 @@ int main() {
 	sf::Sprite background;
 	background.setTexture(backgroundt);
 	background.setScale(1400 / background.getLocalBounds().width, 900 / background.getLocalBounds().height);
-
+	background.move(-10, 0);
 	
 	//game physics
 	float gravity = 2.;
@@ -114,20 +150,25 @@ int main() {
 			bario.setTextureRect(changeSprite('m'));
 			if (bario.getScale().x == -1)
 			{
-				bario.setScale(1.f, 1.f);
+				bario.setScale(1, 1);
 			}
 			
 		}
 		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 
-			barioXVel -= xAccel;
-			if(barioXVel < -xMax)
-				barioXVel = -xMax;
+			if(!(bario.getPosition().x <= 15)) {
+
+				barioXVel -= xAccel;
+				if(barioXVel < -xMax)
+					barioXVel = -xMax;
+			}
+			else
+				barioXVel = 0;
 
 			bario.setTextureRect(changeSprite('m'));
 			if (bario.getScale().x == 1)
 			{
-				bario.setScale(-1.f, 1.f);
+				bario.setScale(-1, 1);
 			}
 		}
 		else {
@@ -143,6 +184,7 @@ int main() {
 		}
 
 		bario.move(barioXVel, barioYVel);
+		background.move(-barioXVel / 10, -barioYVel / 10);
 
 		if(bario.getPosition().y + gravity >= window.getSize().y - 55) {
 
@@ -154,13 +196,30 @@ int main() {
 		}
 
 		//view shifts when bario leaves screen
-		view.setCenter(bario.getPosition().x, bario.getPosition().y);
+		if(bario.getPosition().x >= view.getCenter().x + 200) {
+
+			view.setCenter(bario.getPosition().x - 200, 500);
+		}
+		else if(bario.getPosition().x <= view.getCenter().x - 200) {
+
+			if(view.getCenter().x <= 600) {}
+			else
+				view.setCenter(bario.getPosition().x + 200, 500);
+		}
 
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
 		window.draw(bario);
+
 		window.draw(tile);
+		window.draw(tile2);
+		window.draw(tile3);
+		window.draw(tile4);
+		window.draw(tile5);
+		window.draw(tile6);
+		window.draw(ttile);
+
 		window.display();
 	}
 

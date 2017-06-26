@@ -23,7 +23,7 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1400, 900), "Buper Bario");
 
 	//create view
-	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
+	sf::View view(sf::Vector2f(400, 600), sf::Vector2f(800, 600));
 
 	//vector for bario walking animations
 	sf::Texture bariot;
@@ -33,32 +33,39 @@ int main() {
 	sf::Sprite bario;
 	bario.setTexture(bariot);
 	bario.setTextureRect(changeSprite('s'));
-	bario.setPosition(sf::Vector2f(20, window.getSize().y - 55));
-
-	//level layout
-	std::vector< std::vector<float> > map {{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-										  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00}};
+	bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
 
 	//load tile set
-	//numTilesX = window.getSize().x / tile.width + 2
-	//numTilesY = window.getSize().y / tile.height + 2
+	sf::Texture tiles;
+	tiles.loadFromFile("groundtiles.png");
+	sf::Sprite tile;
+	tile.setTexture(tiles);
+	tile.setTextureRect(sf::IntRect(122, 152, 15, 15));
+	tile.setPosition(sf::Vector2f(20, window.getSize().y - 25));
 
+	//level layout
+	int numTilesX = window.getSize().x / tile.getLocalBounds().width + 2;
+	int numTilesY = window.getSize().y / tile.getLocalBounds().height + 2;
+	std::vector< std::vector<float> > map;
+	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
+
+   /*{{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
+	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00}}; */
 
 	//load background
 	//make parallax
 	sf::Texture backgroundt;
-	backgroundt.loadFromFile("backgrounds.png");
+	backgroundt.loadFromFile("background1.png");
 	sf::Sprite background;
 	background.setTexture(backgroundt);
-	background.setTextureRect(sf::IntRect(10, 10, 500, 420));
 	background.setScale(1400 / background.getLocalBounds().width, 900 / background.getLocalBounds().height);
 
 	
@@ -146,10 +153,14 @@ int main() {
 			bario.setTextureRect(changeSprite('j'));
 		}
 
+		//view shifts when bario leaves screen
+		view.setCenter(bario.getPosition().x, bario.getPosition().y);
+
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
 		window.draw(bario);
+		window.draw(tile);
 		window.display();
 	}
 

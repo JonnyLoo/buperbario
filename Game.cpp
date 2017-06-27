@@ -66,6 +66,16 @@ void Game::run() {
 	std::vector< std::vector<float> > map;
 	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
 
+	std::vector< sf::Sprite> listTiles;
+	for (int i = 0; i < numTilesX; i = i + 1)
+	{
+		sf::Sprite newTile;
+		newTile.setTexture(tiles);
+		newTile.setTextureRect(sf::IntRect(122, 169, 14, 14));
+		newTile.setPosition(sf::Vector2f(window.getSize().x / tile[0].getLocalBounds().width, window.getSize().y - 9));
+		listTiles.push_back(newTile);
+	}
+
 	std::cout << numTilesX << std::endl << numTilesY << std::endl;
 
    /*{{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
@@ -89,7 +99,7 @@ void Game::run() {
 	background.setPosition(0, window.getSize().y - 800);
 	
 	//game physics
-	float gravity = 2.;
+	float gravity = 1.5;
 	float barioXVel = 0.;
 	float barioYVel = 0.;
 	float xMax = 9.;
@@ -212,6 +222,15 @@ void Game::run() {
 		window.setView(view);
 		window.draw(background);
 		window.draw(bario);
+
+		bool inBounds = true;
+		std::vector<sf::Sprite>::iterator it = listTiles.begin();
+
+		while (inBounds && it != listTiles.end())
+		{
+			window.draw(*it);
+			it++;
+		}
 
 		for(int i = 0; i < tile.size(); i++) {
 

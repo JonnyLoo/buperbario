@@ -18,6 +18,11 @@ sf::IntRect changeSprite(char state)
 	}
 }
 
+void drawTiles(std::vector<sf::Sprite> tiles)
+{
+
+}
+
 int main() {
 
 	//create window
@@ -81,7 +86,17 @@ int main() {
 	int numTilesX = window.getSize().x / tile.getLocalBounds().width + 2;
 	int numTilesY = window.getSize().y / tile.getLocalBounds().height + 2;
 	std::vector< std::vector<float> > map;
-	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
+	map.resize(numTilesY - 1, std::vector<float>(numTilesX, 00));
+
+	std::vector< sf::Sprite> listTiles;
+	for (int i = 0; i < numTilesX; i = i + 1)
+	{
+		sf::Sprite newTile;
+		newTile.setTexture(tiles);
+		newTile.setTextureRect(sf::IntRect(122, 169, 14, 14));
+		newTile.setPosition(sf::Vector2f(window.getSize().x / tile.getLocalBounds().width, window.getSize().y - 9));
+		listTiles.push_back(newTile);
+	}
 
 	std::cout << numTilesX << std::endl << numTilesY << std::endl;
 
@@ -100,16 +115,19 @@ int main() {
 	//make parallax
 	sf::Texture backgroundt;
 	backgroundt.loadFromFile("background1.png");
+	backgroundt.setRepeated(true);
+
 	sf::Sprite background;
 	background.setTexture(backgroundt);
 	background.setScale(1400 / background.getLocalBounds().width, 900 / background.getLocalBounds().height);
+	background.setTextureRect(sf::IntRect(0,0,4000,900)); //Background stretches for about IntRect.x * 2.5. So background till 10000 
 	background.move(-10, 0);
 	
 	//game physics
 	float gravity = 2.;
 	float barioXVel = 0.;
 	float barioYVel = 0.;
-	float xMax = 9.;
+	float xMax = 6.;
 	float xAccel = .5;
 	bool onground = true;
 
@@ -219,6 +237,15 @@ int main() {
 		window.draw(tile5);
 		window.draw(tile6);
 		window.draw(ttile);
+
+		bool inBounds = true;
+		std::vector<sf::Sprite>::iterator it = listTiles.begin();
+
+		while (inBounds && it != listTiles.end())
+		{
+			window.draw(*it);
+			it++;
+		}
 
 		window.display();
 	}

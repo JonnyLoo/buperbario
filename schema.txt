@@ -1,0 +1,19 @@
+main
+	game
+		engine
+			sound engine
+			graphics engine
+			event engine
+		objects
+			items
+				coins
+				powerups
+			moveable
+				player
+				enemy
+			tiles
+				breakable
+					brick
+				unbreakable
+					ground
+					item block

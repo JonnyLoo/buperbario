@@ -1,27 +1,11 @@
-#include <mutex>
+#include <SFML/Graphics.hpp>
 #include <vector>
-
-#include "GameEngine.hpp"
-#include "GraphicsEngine.hpp"
-#include "SoundEngine.hpp"
-#include "EventEngine.hpp"
-#include "EventListener.hpp"
+#include <iostream>
 
 class Game {
 
 public:
 	Game();
-	~Game();
+	sf::IntRect changeSprite(int s);
 	void run();
-	void stop();
-
-private:
-	bool running;
-	std::mutex running_mutex;
-
-	GameEngine *gEngine;
-	GraphicsEngine *gfxEngine;
-	SoundEngine *sEngine;
-	EventEngine *eEngine;
-	std::vector<EventListener*> listeners;
 };

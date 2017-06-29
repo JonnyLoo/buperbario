@@ -41,9 +41,10 @@ void Game::run() {
 	sf::Sprite bario;
 	bario.setTexture(bariot);
 	bario.setTextureRect(changeSprite(bstate));
-	bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
-	bario.setOrigin(9.5, 10);
+	bario.setPosition(sf::Vector2f(30, window.getSize().y - 55));
+
 	bario.setScale(20 / bario.getLocalBounds().width, 20 / bario.getLocalBounds().height);
+	bario.setOrigin(10, 10);
 
 	//load tile set
 	sf::Texture tiles;
@@ -66,16 +67,6 @@ void Game::run() {
 	std::vector< std::vector<float> > map;
 	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
 
-	std::vector< sf::Sprite> listTiles;
-	for (int i = 0; i < numTilesX; i = i + 1)
-	{
-		sf::Sprite newTile;
-		newTile.setTexture(tiles);
-		newTile.setTextureRect(sf::IntRect(122, 169, 14, 14));
-		newTile.setPosition(sf::Vector2f(window.getSize().x / tile[0].getLocalBounds().width, window.getSize().y - 9));
-		listTiles.push_back(newTile);
-	}
-
 	std::cout << numTilesX << std::endl << numTilesY << std::endl;
 
    /*{{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
@@ -93,10 +84,12 @@ void Game::run() {
 	//make parallax
 	sf::Texture backgroundt;
 	backgroundt.loadFromFile("background1.png");
+	backgroundt.setRepeated(true);
 	sf::Sprite background;
 	background.setTexture(backgroundt);
-	background.setScale(2746 / background.getLocalBounds().width, 800 / background.getLocalBounds().height);
+	background.setScale(2746 / background.getLocalBounds().width, 900 / background.getLocalBounds().height);
 	background.setPosition(0, window.getSize().y - 800);
+	background.setTextureRect(sf::IntRect(0, 0, 4000, 900)); //Background stretches for about IntRect.x * 2.5. So background till 10000 
 	
 	//game physics
 	float gravity = 1.5;
@@ -196,15 +189,48 @@ void Game::run() {
 		bario.move(barioXVel, barioYVel);
 		background.move(-barioXVel / 10, -barioYVel / 10);
 
-		if(bario.getPosition().y + gravity >= window.getSize().y - 55) {
-
-			onground = true;
+		//Checks if Bario is standing on any tiles
+		bool checkOnGround = true;
+		std::vector<sf::Sprite>::iterator it = tile.begin();
+		while (checkOnGround && it != tile.end())
+		{
+			if ((*it).getPosition().x > bario.getPosition().x)
+			{
+				checkOnGround = false;
+				onground = false;
+			}
+			else if (bario.getPosition().x - (*it).getPosition().x < 20)
+			{
+				if ((*it).getPosition().y - bario.getPosition().y < 15 )
+				{
+					checkOnGround = false;
+					onground = true;
+				}
+				else
+				{
+					it = ++it;
+				}
+			}
+			else
+			{
+				it = ++it;
+			}
 		}
-		else {
+		if (it == tile.end())
+			onground = false;
+
+
+		if (!onground) {
 
 			bstate = 4;
 			bario.setTextureRect(changeSprite(bstate));
 		}
+		else
+			bario.setPosition(bario.getPosition().x, (*it).getPosition().y - 12);
+
+		//Tired of Bario falling forever. Reset when falls to bottom of screen
+		if(bario.getPosition().y > window.getSize().y)
+			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
 
 		//view shifts when bario leaves screen
 		if(bario.getPosition().x >= view.getCenter().x + 200) {
@@ -222,15 +248,6 @@ void Game::run() {
 		window.setView(view);
 		window.draw(background);
 		window.draw(bario);
-
-		bool inBounds = true;
-		std::vector<sf::Sprite>::iterator it = listTiles.begin();
-
-		while (inBounds && it != listTiles.end())
-		{
-			window.draw(*it);
-			it++;
-		}
 
 		for(int i = 0; i < tile.size(); i++) {
 

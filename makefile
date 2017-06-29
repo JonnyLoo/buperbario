@@ -7,7 +7,7 @@ OBJS=main.cpp Game.cpp
 all: bario
 
 bario: $(OBJS)
-	$(CXX) $(OBJS) -o main.out $(LIBS)
+	$(CXX) $(OBJS) -o main.exe $(LIBS)
 
 clean:
 	$(RM) *.out

@@ -33,7 +33,7 @@ int main() {
 
 	//vector for bario walking animations
 	sf::Texture bariot;
-	bariot.loadFromFile("bario.png");
+	bariot.loadFromFile("smallbario.png");
 
 	//bario sprite
 	sf::Sprite bario;

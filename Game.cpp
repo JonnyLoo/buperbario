@@ -42,7 +42,6 @@ void Game::run() {
 	bario.setTexture(bariot);
 	bario.setTextureRect(changeSprite(bstate));
 	bario.setPosition(sf::Vector2f(30, window.getSize().y - 55));
-
 	bario.setScale(20 / bario.getLocalBounds().width, 20 / bario.getLocalBounds().height);
 	bario.setOrigin(10, 10);
 
@@ -51,7 +50,7 @@ void Game::run() {
 	tiles.loadFromFile("tiles.png");
 
 	int xLoc = 20;
-	std::vector<sf::Sprite> tile(10);
+	std::vector<sf::Sprite> tile(50);
 	for(int i = 0; i < tile.size(); i++) {
 
 		tile[i].setTexture(tiles);
@@ -91,6 +90,21 @@ void Game::run() {
 	background.setPosition(0, window.getSize().y - 800);
 	background.setTextureRect(sf::IntRect(0, 0, 4000, 900)); //Background stretches for about IntRect.x * 2.5. So background till 10000 
 	
+	//enemies
+	sf::Texture koopat;
+	koopat.loadFromFile("enemies.png");
+	sf::Sprite koopa;
+	koopa.setTexture(koopat);
+	koopa.setTextureRect(sf::IntRect(105, 12, 18, 31));
+	koopa.setScale(20 / koopa.getLocalBounds().width, 30 / koopa.getLocalBounds().height);
+	koopa.setOrigin(koopa.getLocalBounds().width / 2, koopa.getLocalBounds().height / 2);
+	koopa.setPosition(500, window.getSize().y - 45);
+
+	//koopa animation
+	int koopa_delay = 5;
+	int koopa_count = 0;
+	int koopa_state = 0;
+
 	//game physics
 	float gravity = 1.5;
 	float barioXVel = 0.;
@@ -98,6 +112,9 @@ void Game::run() {
 	float xMax = 9.;
 	float xAccel = .5;
 	bool onground = true;
+
+	float koopaYVel = 0.;
+	bool koopa_onground = true;
 
 	//game loop
 	while(window.isOpen()) {
@@ -112,6 +129,7 @@ void Game::run() {
 
 		//game physics
 		barioYVel += gravity;
+		koopaYVel += gravity;
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 
@@ -125,6 +143,11 @@ void Game::run() {
 		if(onground) {
 
 			barioYVel = 0.;
+		}
+
+		if(koopa_onground) {
+
+			koopaYVel = 0.;
 		}
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
@@ -187,10 +210,10 @@ void Game::run() {
 		}
 
 		bario.move(barioXVel, barioYVel);
-		background.move(-barioXVel / 10, -barioYVel / 10);
 
 		//Checks if Bario is standing on any tiles
 		bool checkOnGround = true;
+		bool checkOnGround_koopa = true;
 		std::vector<sf::Sprite>::iterator it = tile.begin();
 		while (checkOnGround && it != tile.end())
 		{
@@ -201,7 +224,7 @@ void Game::run() {
 			}
 			else if (bario.getPosition().x - (*it).getPosition().x < 20)
 			{
-				if ((*it).getPosition().y - bario.getPosition().y < 15 )
+				if ((*it).getPosition().y - bario.getPosition().y < 15)
 				{
 					checkOnGround = false;
 					onground = true;
@@ -215,9 +238,34 @@ void Game::run() {
 			{
 				it = ++it;
 			}
+
+			if ((*it).getPosition().x > koopa.getPosition().x)
+			{
+				checkOnGround_koopa = false;
+				koopa_onground = false;
+			}
+			else if (koopa.getPosition().x - (*it).getPosition().x < 20)
+			{
+				if ((*it).getPosition().y - koopa.getPosition().y < 15)
+				{
+					checkOnGround_koopa = false;
+					koopa_onground = true;
+				}
+				else
+				{
+					it = ++it;
+				}
+			}
+			else
+			{
+				it = ++it;
+			}
 		}
-		if (it == tile.end())
+		if (it == tile.end()) {
+
 			onground = false;
+			koopa_onground = false;
+		}
 
 
 		if (!onground) {
@@ -228,9 +276,46 @@ void Game::run() {
 		else
 			bario.setPosition(bario.getPosition().x, (*it).getPosition().y - 12);
 
+		if(koopa_onground) {
+
+			koopa.setPosition(koopa.getPosition().x, (*it).getPosition().y - 16);
+		}
+
 		//Tired of Bario falling forever. Reset when falls to bottom of screen
 		if(bario.getPosition().y > window.getSize().y)
 			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
+
+		//koopa follows bario
+		if(koopa.getPosition().x - bario.getPosition().x > 0) {
+
+			koopa.move(-.2, 0);
+			koopa.setScale(1, 1);
+		}
+		else {
+
+			koopa.move(.2, 0);
+			koopa.setScale(-1, 1);
+		}
+
+		//koopa animation
+		koopa_count++;
+		if(koopa_count > koopa_delay) {
+
+			koopa_count = 0;
+			if(koopa_state == 0)
+				koopa_state = 1;
+			else
+				koopa_state = 0;
+
+			switch(koopa_state) {
+
+				case 0:
+					koopa.setTextureRect(sf::IntRect(105, 12, 18, 31)); 
+					break;
+				case 1:
+					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 		
+			}	
+		}
 
 		//view shifts when bario leaves screen
 		if(bario.getPosition().x >= view.getCenter().x + 200) {
@@ -248,6 +333,7 @@ void Game::run() {
 		window.setView(view);
 		window.draw(background);
 		window.draw(bario);
+		window.draw(koopa);
 
 		for(int i = 0; i < tile.size(); i++) {
 

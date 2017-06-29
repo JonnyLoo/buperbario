@@ -238,6 +238,15 @@ void Game::run() {
 			{
 				it = ++it;
 			}
+		}
+
+		if (it == tile.end()) {
+
+			onground = false;
+		}
+
+		it = tile.begin();
+		while(checkOnGround_koopa && it != tile.end()) {
 
 			if ((*it).getPosition().x > koopa.getPosition().x)
 			{
@@ -261,12 +270,9 @@ void Game::run() {
 				it = ++it;
 			}
 		}
-		if (it == tile.end()) {
 
-			onground = false;
+		if(it == tile.end())
 			koopa_onground = false;
-		}
-
 
 		if (!onground) {
 

@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Bario.hpp"
 
 Game::Game() {}
 
@@ -20,18 +21,35 @@ sf::IntRect Game::changeSprite(int state)
 	}
 }
 
-bool Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
+//Return 0 for no collision, 1 for touching sideways, 2 for jumping on other
+int Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
+	sf::FloatRect r1 = s1.getGlobalBounds();
+	sf::FloatRect r2 = s2.getGlobalBounds();
 
-/*	s1l = s1.getPosition().x - s1.getLocalBounds().width / 2;
-	s1t = s1.getPosition().y - s1.getLocalBounds().height / 2;
-	s1r = s1.getPosition().x + s1.getLocalBounds().width / 2;
-	s1b = s1.getPosition().y + s1.getLocalBounds().height / 2;
-	s2l = s2.getPosition().x - s2.getLocalBounds().width / 2;
-	s2t = s2.getPosition().y - s2.getLocalBounds().height / 2;
-	s2r = s2.getPosition().x + s2.getLocalBounds().width / 2;
-	s2b = s2.getPosition().y + s2.getLocalBounds().height / 2;
 
-	if()*/
+	if (!r1.intersects(r2))
+	{
+		return 0;
+	}
+
+	float s1l = r1.left;
+	float s1r = r1.left + r1.width;
+	float s1t = r1.top;
+	float s1b = r1.top + r1.height;
+	float s2l = r2.left;
+	float s2r = r2.left + r2.width;
+	float s2t = r2.top;
+	float s2b = r2.top + r2.height;
+
+	float xDiff = s1.getPosition().x - s2.getPosition().x;
+	std::cout << "s1 x: " << s1.getPosition().x << std::endl;
+	std::cout << "s2 x: " << s2.getPosition().x << std::endl;
+
+
+	if (xDiff < 10 && xDiff > -10)
+		return 2;
+	else
+		return 1;
 }
 
 void Game::run() {
@@ -58,6 +76,8 @@ void Game::run() {
 	bario.setPosition(sf::Vector2f(30, window.getSize().y - 55));
 	bario.setScale(20 / bario.getLocalBounds().width, 20 / bario.getLocalBounds().height);
 	bario.setOrigin(10, 10);
+
+	Bario b1(bario);
 
 	//load tile set
 	sf::Texture tiles;
@@ -121,6 +141,7 @@ void Game::run() {
 
 	//game physics
 	float gravity = 1.5;
+
 	float barioXVel = 0.;
 	float barioYVel = 0.;
 	float xMax = 9.;
@@ -329,16 +350,19 @@ void Game::run() {
 			koopa.setScale(-1, 1);
 		}
 
-/*		//koopa death
-		if(collisionCheck(koopa, bario)) {
+		int collision = collisionCheck(bario, koopa);
 
-			if(bario.getPosition().x > koopa.getPosition().x) {
-
+		if (collision == 1 && koopa_state != 2)
+		{
+			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
+			view.setCenter(sf::Vector2f(600, 500));
+		}
+		//koopa death
+		if(collision == 2) {
 				koopa_state = 2;
 				koopaXVel = 0;
 				koopaXAccel = 0;
-			}
-		}*/
+		}
 
 		koopa.move(koopaXVel, 0);
 
@@ -349,7 +373,7 @@ void Game::run() {
 			koopa_count = 0;
 			if(koopa_state == 0)
 				koopa_state = 1;
-			else
+			else if(koopa_state == 1)
 				koopa_state = 0;
 
 			switch(koopa_state) {
@@ -358,9 +382,11 @@ void Game::run() {
 					koopa.setTextureRect(sf::IntRect(105, 12, 18, 31)); 
 					break;
 				case 1:
-					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 	
-/*				case 2:
-					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));*/	
+					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 
+					break;
+				case 2:
+					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));	
+					break;
 			}	
 		}
 

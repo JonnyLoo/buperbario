@@ -2,7 +2,7 @@ CXX=g++
 RM=rm -f
 LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-OBJS=main.cpp Game.cpp
+OBJS=main.cpp Game.cpp Unit.cpp Bario.cpp
 
 all: bario
 

@@ -20,6 +20,20 @@ sf::IntRect Game::changeSprite(int state)
 	}
 }
 
+bool Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
+
+	s1l = s1.getPosition().x - s1.getLocalBounds().width / 2;
+	s1t = s1.getPosition().y - s1.getLocalBounds().height / 2;
+	s1r = s1.getPosition().x + s1.getLocalBounds().width / 2;
+	s1b = s1.getPosition().y + s1.getLocalBounds().height / 2;
+	s2l = s2.getPosition().x - s2.getLocalBounds().width / 2;
+	s2t = s2.getPosition().y - s2.getLocalBounds().height / 2;
+	s2r = s2.getPosition().x + s2.getLocalBounds().width / 2;
+	s2b = s2.getPosition().y + s2.getLocalBounds().height / 2;
+	
+	if()
+}
+
 void Game::run() {
 
 	//create window
@@ -113,7 +127,10 @@ void Game::run() {
 	float xAccel = .5;
 	bool onground = true;
 
+	float koopaXVel = 0.;
 	float koopaYVel = 0.;
+	float koopaXMax = .4;
+	float koopaXAccel = .2;
 	bool koopa_onground = true;
 
 	//game loop
@@ -209,6 +226,8 @@ void Game::run() {
 			bario.setTextureRect(changeSprite(bstate));
 		}
 
+
+
 		bario.move(barioXVel, barioYVel);
 
 		//Checks if Bario is standing on any tiles
@@ -288,20 +307,40 @@ void Game::run() {
 		}
 
 		//Tired of Bario falling forever. Reset when falls to bottom of screen
-		if(bario.getPosition().y > window.getSize().y)
+		if(bario.getPosition().y > window.getSize().y) {
+
 			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
+			view.setCenter(sf::Vector2f(600, 500));
+		}
 
 		//koopa follows bario
 		if(koopa.getPosition().x - bario.getPosition().x > 0) {
 
-			koopa.move(-.2, 0);
+			koopaXVel -= koopaXAccel;
+			if(koopaXVel < -koopaXMax)
+				koopaXVel = -koopaXMax;
 			koopa.setScale(1, 1);
 		}
 		else {
 
-			koopa.move(.2, 0);
+			koopaXVel += koopaXAccel;
+			if(koopaXVel > koopaXMax)
+				koopaXVel = koopaXMax;
 			koopa.setScale(-1, 1);
 		}
+
+		//koopa death
+		if(collisionCheck(koopa, bario)) {
+
+			if(bario.getPosition().x > koopa.getPosition().x) {
+
+				koopa_state = 2;
+				koopaXVel = 0;
+				koopaXAccel = 0;
+			}
+		}
+
+		koopa.move(koopaXVel, 0);
 
 		//koopa animation
 		koopa_count++;
@@ -319,7 +358,9 @@ void Game::run() {
 					koopa.setTextureRect(sf::IntRect(105, 12, 18, 31)); 
 					break;
 				case 1:
-					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 		
+					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 	
+				case 2:
+					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));	
 			}	
 		}
 

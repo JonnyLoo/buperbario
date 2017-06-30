@@ -8,7 +8,6 @@ sf::IntRect Game::changeSprite(int state)
 	switch(state) {
 		case 0: //standing 
 			return sf::IntRect(10, 6, 20, 22);
-			break;
 		case 1: //moving 1
 			return sf::IntRect(30, 6, 20, 22);
 		case 2: //moving 2

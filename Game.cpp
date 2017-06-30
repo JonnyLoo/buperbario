@@ -22,7 +22,7 @@ sf::IntRect Game::changeSprite(int state)
 
 bool Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
 
-	s1l = s1.getPosition().x - s1.getLocalBounds().width / 2;
+/*	s1l = s1.getPosition().x - s1.getLocalBounds().width / 2;
 	s1t = s1.getPosition().y - s1.getLocalBounds().height / 2;
 	s1r = s1.getPosition().x + s1.getLocalBounds().width / 2;
 	s1b = s1.getPosition().y + s1.getLocalBounds().height / 2;
@@ -30,8 +30,8 @@ bool Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
 	s2t = s2.getPosition().y - s2.getLocalBounds().height / 2;
 	s2r = s2.getPosition().x + s2.getLocalBounds().width / 2;
 	s2b = s2.getPosition().y + s2.getLocalBounds().height / 2;
-	
-	if()
+
+	if()*/
 }
 
 void Game::run() {
@@ -329,7 +329,7 @@ void Game::run() {
 			koopa.setScale(-1, 1);
 		}
 
-		//koopa death
+/*		//koopa death
 		if(collisionCheck(koopa, bario)) {
 
 			if(bario.getPosition().x > koopa.getPosition().x) {
@@ -338,7 +338,7 @@ void Game::run() {
 				koopaXVel = 0;
 				koopaXAccel = 0;
 			}
-		}
+		}*/
 
 		koopa.move(koopaXVel, 0);
 
@@ -359,8 +359,8 @@ void Game::run() {
 					break;
 				case 1:
 					koopa.setTextureRect(sf::IntRect(123, 12, 18, 31)); 	
-				case 2:
-					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));	
+/*				case 2:
+					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));*/	
 			}	
 		}
 

@@ -1,21 +1,34 @@
 #include "Unit.hpp"
 
-Unit::Unit(sf::Sprite s) {
-	sprite = s;
+Unit::Unit(sf::Texture texture, sf::RenderWindow w) : Object(texture, w) {
+
+	state = 0;
+	animation_delay = 0;
+	x_vel = 0;
+	y_vel = 0;
+	x_accel = 0;
+	x_max_vel = 0;
+	gravity = 0;
 }
 
-sf::Sprite Unit::getSprite() {
-	return sprite;
+void Unit::updateSpeed() {
+
+	x_vel += x_accel;
+	y_vel += gravity;
+	if(x_vel >= x_max_vel)
+		x_vel = x_max_vel;
 }
 
-void Unit::turn() {
-	sprite.setScale(-1, 1);
+void Unit::flip() {
+
+	if(s.getScale() > 0)
+		s.setScale(-1, 1);
+	else
+		s.setScale(1, 1);
 }
 
-void updatePosition() {
-	sprite.move(xVel, yVel);
-}
+//TODO
+bool Unit::onGround(std::vector<sf::Sprite> tiles) {
 
-bool onGround(std::vector<sf::Sprite> tiles) {
-	return false;
+	return true;
 }

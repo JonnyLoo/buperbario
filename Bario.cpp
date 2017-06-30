@@ -1,92 +1,44 @@
-#include "Bario.hpp"
 #include "Unit.hpp"
 
-Bario::Bario(sf::Sprite sprite) : Unit(sprite) {}
+Bario::Bario(sf::Texture texture, sf::RenderWindow w) : Unit(texture, w) {
 
-void changeState(int state) {
-	sf::IntRect newState;
+	Bario::setup();
+}
 
-	switch (state) {
-	case 0: //standing 
-		newState = sf::IntRect(10, 6, 20, 22);
-		break;
-	case 1: //moving 1
-		newState = sf::IntRect(30, 6, 20, 22);
-		break;
-	case 2: //moving 2
-		newState = sf::IntRect(53, 5, 20, 22);
-		break;
-	case 4: //jumping
-		newState = sf::IntRect(180, 6, 20, 22);
-		break;
-	default:
-		newState = sf::IntRect(10, 6, 20, 22);
+void Bario::setup() {
 
-		sprite.setTextureRect(newState);
-		return;
-	}
+	animation_delay = 3;
+	x_max_vel = 9;
+	x_accel = .5;
+	gravity = 1.5;
 
-	void jump() {
-		if (onground) {
+	s.setTextureRect(sf::IntRect(10, 6, 20, 22));
+	s.setPosition(sf::Vector2f(30, w.getSize().y - 55));
+	s.setScale(20 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
+	s.setOrigin(10, 10);
+}
 
-			yVel -= 25.;
-			onground = false;
-		}
-	}
+void Bario::changeState(int new_state) {
 
-	void moveRight() {
 
-		xVel += xAccel;
-		if (xVel > xMax)
-			xVel = xMax;
+}
 
-		count++;
-		if (count == 3) {
+void Bario::jump() {
 
-			count = 0;
-			bstate++;
-			if (bstate > 2)
-				bstate = 1;
-		}
-		changeState(bstate);
-		if (sprite.getScale().x < 0)
-		{
-			turn();
-		}
-	}
 
-	void moveLeft() {
-		if (!(sprite.getPosition().x <= 15)) {
+}
 
-			xVel -= xAccel;
-			if (xVel < -xMax)
-				xVel = -xMax;
-		}
-		else
-			xVel = 0;
+void Bario::moveLeft() {
 
-		count++;
-		if (count == 3) {
 
-			count = 0;
-			bstate++;
-			if (bstate > 2)
-				bstate = 1;
-		}
-		changeState(bstate);
-		if (sprite.getScale().x > 0)
-		{
-			turn();
-		}
-	}
+}
 
-	void noInput() {
-		if (xVel > 0)
-			xVel--;
-		else if (xVel < 0)
-			xVel++;
-		else
-			xVel = 0;
+void Bario::moveRight() {
 
-		changeState(0);
-	}
+
+}
+
+void Bario::update() {
+
+
+}

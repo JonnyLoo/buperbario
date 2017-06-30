@@ -4,11 +4,16 @@ main
 			sound engine
 			graphics engine
 			event engine
+				keyboard event
+				gameover event
+				game finished event
+				powerup event
 		objects
+			background
 			items
 				coins
 				powerups
-			moveable
+			units
 				player
 				enemy
 			tiles

@@ -1,14 +1,15 @@
 #include "Object.hpp"
 
-Object::Object(sf::Texture texture, sf::RenderWindow w) {
-
+Object::Object(sf::Texture texture, sf::RenderWindow* window) {
 	t = texture;
 	s.setTexture(texture);
+
+	w = window;
 }
 
 void Object::draw() {
 
-	w.draw(s);
+	w->draw(s);
 }
 
 //left
@@ -24,13 +25,13 @@ float Object::getPositionY1() {
 }
 
 //right
-float Object::getPositionX2(); {
+float Object::getPositionX2() {
 
 	return s.getGlobalBounds().left + s.getGlobalBounds().width;
 }
 
 //bottom
-float Object::getPositionY2(); {
+float Object::getPositionY2() {
 
 	return s.getGlobalBounds().top + s.getGlobalBounds().height;
 }

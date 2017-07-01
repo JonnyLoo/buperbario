@@ -1,7 +1,6 @@
 #include "Unit.hpp"
 
-Unit::Unit(sf::Texture texture, sf::RenderWindow w) : Object(texture, w) {
-
+Unit::Unit(sf::Texture texture, sf::RenderWindow* window, std::vector<sf::Sprite> tiles_) : Object(texture, window) {
 	state = 0;
 	animation_delay = 0;
 	x_vel = 0;
@@ -9,6 +8,7 @@ Unit::Unit(sf::Texture texture, sf::RenderWindow w) : Object(texture, w) {
 	x_accel = 0;
 	x_max_vel = 0;
 	gravity = 0;
+	tiles = tiles_;
 }
 
 void Unit::updateSpeed() {
@@ -21,14 +21,13 @@ void Unit::updateSpeed() {
 
 void Unit::flip() {
 
-	if(s.getScale() > 0)
+	if(s.getScale().x > 0)
 		s.setScale(-1, 1);
 	else
 		s.setScale(1, 1);
 }
 
 //TODO
-bool Unit::onGround(std::vector<sf::Sprite> tiles) {
-
-	return true;
+bool Unit::onGround() {
+	return s.getPosition().y >= tiles[0].getPosition().y - 12;
 }

@@ -3,23 +3,6 @@
 
 Game::Game() {}
 
-sf::IntRect Game::changeSprite(int state)
-{
-	switch(state) {
-		case 0: //standing 
-			return sf::IntRect(10, 6, 20, 22);
-		case 1: //moving 1
-			return sf::IntRect(30, 6, 20, 22);
-		case 2: //moving 2
-			return sf::IntRect(53, 5, 20, 22);
-		case 4: //jumping
-			return sf::IntRect(180, 6, 20, 22);
-		default:
-			return sf::IntRect(10, 6, 20, 22);
-
-	}
-}
-
 //Return 0 for no collision, 1 for touching sideways, 2 for jumping on other
 int Game::collisionCheck(sf::Sprite s1, sf::Sprite s2) {
 	sf::FloatRect r1 = s1.getGlobalBounds();
@@ -59,6 +42,21 @@ void Game::run() {
 	//create view
 	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
+	//load tile set
+	sf::Texture tiles;
+	tiles.loadFromFile("tiles.png");
+
+	int xLoc = 20;
+	std::vector<sf::Sprite> tile(50);
+	for (int i = 0; i < tile.size(); i++) {
+
+		tile[i].setTexture(tiles);
+		tile[i].setTextureRect(sf::IntRect(28, 64, 15, 15));
+		tile[i].setPosition(sf::Vector2f(xLoc, window.getSize().y - 35));
+		tile[i].setScale(20 / tile[i].getLocalBounds().width, 20 / tile[i].getLocalBounds().height);
+		xLoc += 20;
+	}
+
 	//vector for bario walking animations
 	sf::Texture bariot;
 	bariot.loadFromFile("smallbario.png");
@@ -68,30 +66,7 @@ void Game::run() {
 	int delay = 3;
 	int count = 0;
 
-	//bario sprite
-	sf::Sprite bario;
-	bario.setTexture(bariot);
-	bario.setTextureRect(changeSprite(bstate));
-	bario.setPosition(sf::Vector2f(30, window.getSize().y - 55));
-	bario.setScale(20 / bario.getLocalBounds().width, 20 / bario.getLocalBounds().height);
-	bario.setOrigin(10, 10);
-
-	Bario b1(bario);
-
-	//load tile set
-	sf::Texture tiles;
-	tiles.loadFromFile("tiles.png");
-
-	int xLoc = 20;
-	std::vector<sf::Sprite> tile(50);
-	for(int i = 0; i < tile.size(); i++) {
-
-		tile[i].setTexture(tiles);
-		tile[i].setTextureRect(sf::IntRect(28, 64, 15, 15));
-		tile[i].setPosition(sf::Vector2f(xLoc, window.getSize().y - 35));
-		tile[i].setScale(20 / tile[i].getLocalBounds().width, 20 / tile[i].getLocalBounds().height);
-		xLoc += 20;
-	}
+	Bario bario(bariot, window, tile);
 
 	//level layout
 	float numTilesX = (window.getSize().x / tile[0].getLocalBounds().width) + 2; //102
@@ -165,21 +140,10 @@ void Game::run() {
 		}
 
 		//game physics
-		barioYVel += gravity;
 		koopaYVel += gravity;
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-
-			if (onground) {
-
-				barioYVel -= 25.;
-				onground = false;
-			}
-		}
-
-		if(onground) {
-
-			barioYVel = 0.;
+			bario.jump();
 		}
 
 		if(koopa_onground) {
@@ -188,153 +152,92 @@ void Game::run() {
 		}
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-
-			barioXVel += xAccel;
-			if(barioXVel > xMax)
-				barioXVel = xMax;
-
-			count++;
-			if(count == 3) {
-
-				count = 0;
-				bstate++;
-				if(bstate > 2)
-					bstate = 1;
-			}
-			bario.setTextureRect(changeSprite(bstate));
-			if (bario.getScale().x < 0)
-			{
-				bario.setScale(1, 1);
-			}
-			
+			bario.moveRight();
 		}
 		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-
-			if(!(bario.getPosition().x <= 15)) {
-
-				barioXVel -= xAccel;
-				if(barioXVel < -xMax)
-					barioXVel = -xMax;
-			}
-			else
-				barioXVel = 0;
-
-			count++;
-			if(count == 3) {
-
-				count = 0;
-				bstate++;
-				if(bstate > 2)
-					bstate = 1;
-			}
-			bario.setTextureRect(changeSprite(bstate));
-			if (bario.getScale().x > 0)
-			{
-				bario.setScale(-1, 1);
-			}
+			bario.moveLeft();
 		}
 		else {
-
-			if(barioXVel > 0)
-				barioXVel--;
-			else if(barioXVel < 0)
-				barioXVel++;
-			else
-				barioXVel = 0;
-
-			bstate = 0;
-			bario.setTextureRect(changeSprite(bstate));
+			bario.noInput();
 		}
 
 
 
-		bario.move(barioXVel, barioYVel);
 
 		//Checks if Bario is standing on any tiles
-		bool checkOnGround = true;
-		bool checkOnGround_koopa = true;
-		std::vector<sf::Sprite>::iterator it = tile.begin();
-		while (checkOnGround && it != tile.end())
-		{
-			if ((*it).getPosition().x > bario.getPosition().x)
-			{
-				checkOnGround = false;
-				onground = false;
-			}
-			else if (bario.getPosition().x - (*it).getPosition().x < 20)
-			{
-				if ((*it).getPosition().y - bario.getPosition().y < 15)
-				{
-					checkOnGround = false;
-					onground = true;
-				}
-				else
-				{
-					it = ++it;
-				}
-			}
-			else
-			{
-				it = ++it;
-			}
-		}
+		//bool checkOnGround = true;
+		//bool checkOnGround_koopa = true;
+		//std::vector<sf::Sprite>::iterator it = tile.begin();
+		//while (checkOnGround && it != tile.end())
+		//{
+		//	if ((*it).getPosition().x > bario.getPosition().x)
+		//	{
+		//		checkOnGround = false;
+		//		onground = false;
+		//	}
+		//	else if (bario.getPosition().x - (*it).getPosition().x < 20)
+		//	{
+		//		if ((*it).getPosition().y - bario.getPosition().y < 15)
+		//		{
+		//			checkOnGround = false;
+		//			onground = true;
+		//		}
+		//		else
+		//		{
+		//			it = ++it;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		it = ++it;
+		//	}
+		//}
 
-		if (it == tile.end()) {
+		//if (it == tile.end()) {
 
-			onground = false;
-		}
+		//	onground = false;
+		//}
 
-		it = tile.begin();
-		while(checkOnGround_koopa && it != tile.end()) {
+		//it = tile.begin();
+		//while(checkOnGround_koopa && it != tile.end()) {
 
-			if ((*it).getPosition().x > koopa.getPosition().x)
-			{
-				checkOnGround_koopa = false;
-				koopa_onground = false;
-			}
-			else if (koopa.getPosition().x - (*it).getPosition().x < 20)
-			{
-				if ((*it).getPosition().y - koopa.getPosition().y < 15)
-				{
-					checkOnGround_koopa = false;
-					koopa_onground = true;
-				}
-				else
-				{
-					it = ++it;
-				}
-			}
-			else
-			{
-				it = ++it;
-			}
-		}
+		//	if ((*it).getPosition().x > koopa.getPosition().x)
+		//	{
+		//		checkOnGround_koopa = false;
+		//		koopa_onground = false;
+		//	}
+		//	else if (koopa.getPosition().x - (*it).getPosition().x < 20)
+		//	{
+		//		if ((*it).getPosition().y - koopa.getPosition().y < 15)
+		//		{
+		//			checkOnGround_koopa = false;
+		//			koopa_onground = true;
+		//		}
+		//		else
+		//		{
+		//			it = ++it;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		it = ++it;
+		//	}
+		//}
 
-		if(it == tile.end())
-			koopa_onground = false;
+		//if(it == tile.end())
+		//	koopa_onground = false;
 
-		if (!onground) {
 
-			bstate = 4;
-			bario.setTextureRect(changeSprite(bstate));
-		}
-		else
-			bario.setPosition(bario.getPosition().x, (*it).getPosition().y - 12);
 
-		if(koopa_onground) {
+		//if(koopa_onground) {
 
-			koopa.setPosition(koopa.getPosition().x, (*it).getPosition().y - 16);
-		}
+		//	koopa.setPosition(koopa.getPosition().x, (*it).getPosition().y - 16);
+		//}
 
-		//Tired of Bario falling forever. Reset when falls to bottom of screen
-		if(bario.getPosition().y > window.getSize().y) {
 
-			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
-			view.setCenter(sf::Vector2f(600, 500));
-		}
 
 		//koopa follows bario
-		if(koopa.getPosition().x - bario.getPosition().x > 0) {
+		if(koopa.getPosition().x - bario.s.getPosition().x > 0) {
 
 			koopaXVel -= koopaXAccel;
 			if(koopaXVel < -koopaXMax)
@@ -349,19 +252,19 @@ void Game::run() {
 			koopa.setScale(-1, 1);
 		}
 
-		int collision = collisionCheck(bario, koopa);
+		//int collision = collisionCheck(bario, koopa);
 
-		if (collision == 1 && koopa_state != 2)
-		{
-			bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
-			view.setCenter(sf::Vector2f(600, 500));
-		}
-		//koopa death
-		if(collision == 2) {
-				koopa_state = 2;
-				koopaXVel = 0;
-				koopaXAccel = 0;
-		}
+		//if (collision == 1 && koopa_state != 2)
+		//{
+		//	bario.setPosition(sf::Vector2f(20, window.getSize().y - 45));
+		//	view.setCenter(sf::Vector2f(600, 500));
+		//}
+		////koopa death
+		//if(collision == 2) {
+		//		koopa_state = 2;
+		//		koopaXVel = 0;
+		//		koopaXAccel = 0;
+		//}
 
 		koopa.move(koopaXVel, 0);
 
@@ -390,21 +293,20 @@ void Game::run() {
 		}
 
 		//view shifts when bario leaves screen
-		if(bario.getPosition().x >= view.getCenter().x + 200) {
+		if(bario.s.getPosition().x >= view.getCenter().x + 200) {
 
-			view.setCenter(bario.getPosition().x - 200, 500);
+			view.setCenter(bario.s.getPosition().x - 200, 500);
 		}
-		else if(bario.getPosition().x <= view.getCenter().x - 200) {
+		else if(bario.s.getPosition().x <= view.getCenter().x - 200) {
 
 			if(view.getCenter().x <= 600) {}
 			else
-				view.setCenter(bario.getPosition().x + 200, 500);
+				view.setCenter(bario.s.getPosition().x + 200, 500);
 		}
 
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
-		window.draw(bario);
 		window.draw(koopa);
 
 		for(int i = 0; i < tile.size(); i++) {

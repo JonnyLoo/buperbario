@@ -2,7 +2,7 @@
 
 Object::Object(sf::Texture texture, sf::RenderWindow* window) {
 	t = texture;
-	s.setTexture(texture);
+	s.setTexture(t);
 
 	w = window;
 }

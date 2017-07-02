@@ -37,13 +37,34 @@ void Bario::setup() {
 	x_accel = .5;
 	gravity = 1.5;
 
+	/*sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
+	v* = view;
+	setView();*/
 	changeSprite(0);
 	s.setPosition(sf::Vector2f(30, w->getSize().y - 55));
 	s.setScale(20 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
 	s.setOrigin(10, 10);
 }
 
+/*void setView() {
 
+	Object::w->setView(v*);
+}
+
+void updateView() {
+
+	//view shifts when bario leaves screen
+	if(Object::s.getPosition().x >= v*.getCenter().x + 200) {
+
+		v*.setCenter(Object::s.getPosition().x - 200, 500);
+	}
+	else if(Object::s.getPosition().x <= v*.getCenter().x - 200) {
+
+		if(v*.getCenter().x <= 600) {}
+		else
+			v*.setCenter(Object::s.getPosition().x + 200, 500);
+	}
+}*/
 
 void Bario::changeState(int new_state) {
 
@@ -127,7 +148,9 @@ void Bario::update() {
 		changeSprite(state);
 	}
 	else
-		s.setPosition(s.getPosition().x, tiles[0].getPosition().y - 12); //Pls fix this. just gets y position of first tile
+		s.setPosition(s.getPosition().x, Unit::tiles[0].getPosition().y - 12); //Pls fix this. just gets y position of first tile
+
+/*	updateView();*/
 
 	//Tired of Bario falling forever. Reset when falls to bottom of screen
 	if (s.getPosition().y > w->getSize().y) {

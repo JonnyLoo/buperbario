@@ -35,8 +35,11 @@ public:
 	void update();
 
 private:
+	//sf::View* v;
 	void changeSprite(int new_sprite);
 	int animation_count;
+/*	void setView();
+	void updateView();*/
 };
 
 class Koopa : public Unit {

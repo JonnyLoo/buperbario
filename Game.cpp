@@ -62,11 +62,11 @@ void Game::run() {
 	bariot.loadFromFile("smallbario.png");
 
 	//for animations
-	int bstate = 0;
+/*	int bstate = 0;
 	int delay = 3;
-	int count = 0;
+	int count = 0;*/
 
-	Bario bario(bariot, window, tile);
+	Bario bario(bariot, &window, tile, &view);
 
 	//level layout
 	float numTilesX = (window.getSize().x / tile[0].getLocalBounds().width) + 2; //102
@@ -116,11 +116,11 @@ void Game::run() {
 	//game physics
 	float gravity = 1.5;
 
-	float barioXVel = 0.;
+/*	float barioXVel = 0.;
 	float barioYVel = 0.;
 	float xMax = 9.;
 	float xAccel = .5;
-	bool onground = true;
+	bool onground = true;*/
 
 	float koopaXVel = 0.;
 	float koopaYVel = 0.;
@@ -145,12 +145,6 @@ void Game::run() {
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 			bario.jump();
 		}
-
-		if(koopa_onground) {
-
-			koopaYVel = 0.;
-		}
-
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 			bario.moveRight();
 		}
@@ -161,13 +155,20 @@ void Game::run() {
 			bario.noInput();
 		}
 
+		bario.update();
 
+
+
+		if(koopa_onground) {
+
+			koopaYVel = 0.;
+		}
 
 
 		//Checks if Bario is standing on any tiles
 		//bool checkOnGround = true;
-		//bool checkOnGround_koopa = true;
-		//std::vector<sf::Sprite>::iterator it = tile.begin();
+		bool checkOnGround_koopa = true;
+		std::vector<sf::Sprite>::iterator it = tile.begin();
 		//while (checkOnGround && it != tile.end())
 		//{
 		//	if ((*it).getPosition().x > bario.getPosition().x)
@@ -199,40 +200,40 @@ void Game::run() {
 		//}
 
 		//it = tile.begin();
-		//while(checkOnGround_koopa && it != tile.end()) {
+		while(checkOnGround_koopa && it != tile.end()) {
 
-		//	if ((*it).getPosition().x > koopa.getPosition().x)
-		//	{
-		//		checkOnGround_koopa = false;
-		//		koopa_onground = false;
-		//	}
-		//	else if (koopa.getPosition().x - (*it).getPosition().x < 20)
-		//	{
-		//		if ((*it).getPosition().y - koopa.getPosition().y < 15)
-		//		{
-		//			checkOnGround_koopa = false;
-		//			koopa_onground = true;
-		//		}
-		//		else
-		//		{
-		//			it = ++it;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		it = ++it;
-		//	}
-		//}
+			if ((*it).getPosition().x > koopa.getPosition().x)
+			{
+				checkOnGround_koopa = false;
+				koopa_onground = false;
+			}
+			else if (koopa.getPosition().x - (*it).getPosition().x < 20)
+			{
+				if ((*it).getPosition().y - koopa.getPosition().y < 15)
+				{
+					checkOnGround_koopa = false;
+					koopa_onground = true;
+				}
+				else
+				{
+					it = ++it;
+				}
+			}
+			else
+			{
+				it = ++it;
+			}
+		}
 
-		//if(it == tile.end())
-		//	koopa_onground = false;
+		if(it == tile.end())
+			koopa_onground = false;
 
 
 
-		//if(koopa_onground) {
+		if(koopa_onground) {
 
-		//	koopa.setPosition(koopa.getPosition().x, (*it).getPosition().y - 16);
-		//}
+			koopa.setPosition(koopa.getPosition().x, (*it).getPosition().y - 16);
+		}
 
 
 
@@ -292,7 +293,7 @@ void Game::run() {
 			}	
 		}
 
-		//view shifts when bario leaves screen
+/*		//view shifts when bario leaves screen
 		if(bario.s.getPosition().x >= view.getCenter().x + 200) {
 
 			view.setCenter(bario.s.getPosition().x - 200, 500);
@@ -302,11 +303,12 @@ void Game::run() {
 			if(view.getCenter().x <= 600) {}
 			else
 				view.setCenter(bario.s.getPosition().x + 200, 500);
-		}
+		}*/
 
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
+		bario.draw();
 		window.draw(koopa);
 
 		for(int i = 0; i < tile.size(); i++) {

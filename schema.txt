@@ -14,8 +14,9 @@ main
 				coins
 				powerups
 			units
-				player
-				enemy
+				bario
+				koopa
+				other enemies
 			tiles
 				breakable
 					brick

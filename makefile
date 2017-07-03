@@ -1,13 +1,21 @@
 CXX=g++
+DEBUG=-g
 RM=rm -f
 LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-OBJS=test.cpp Object.cpp Unit.cpp Bario.cpp
+OBJS=main.cpp Game.cpp Object.cpp Unit.cpp Bario.cpp
+OBJST=test.cpp Object.cpp Unit.cpp Bario.cpp
 
 all: bario
 
 bario: $(OBJS)
-	$(CXX) $(OBJS) -o test.exe $(LIBS)
+	$(CXX) $(OBJS) -o main.exe $(LIBS)
+
+test: $(OBJST)
+	$(CXX) $(OBJST) -o test.exe $(LIBS)
+
+debug: $(OBJS)
+	$(CXX) $(DEBUG) $(OBJS) -o main.exe $(LIBS)
 
 clean:
-	$(RM) *.out
+	$(RM) *.out *.exe

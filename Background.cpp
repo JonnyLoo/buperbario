@@ -1,6 +1,6 @@
 #include "Object.hpp"
 
-Background::Background(sf::Texture texture, sf::RenderWindow w) : Object(texture, w) {
+Background::Background(sf::Texture texture, sf::RenderWindow* window) : Object(texture, window) {
 
 	Background::setup();
 }

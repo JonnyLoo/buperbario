@@ -25,7 +25,7 @@ protected:
 class Bario : public Unit {
 
 public:
-	Bario(sf::Texture texture, sf::RenderWindow* w, std::vector<sf::Sprite> tiles_);
+	Bario(sf::Texture texture, sf::RenderWindow* w, std::vector<sf::Sprite> tiles_, sf::View* view);
 	void setup();
 	void changeState(int new_state);
 	void jump();
@@ -35,11 +35,10 @@ public:
 	void update();
 
 private:
-	//sf::View* v;
+	sf::View* v;
 	void changeSprite(int new_sprite);
 	int animation_count;
-/*	void setView();
-	void updateView();*/
+	void updateView();
 };
 
 class Koopa : public Unit {

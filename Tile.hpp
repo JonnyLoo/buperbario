@@ -8,6 +8,7 @@ private:
 	//grass top
 	//grass fill
 	//grass slope
+	//grass steep slope
 	//? block
 	//flippy thing
 	//moving platform

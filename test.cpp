@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "Unit.hpp"
+#include "TileMap.hpp"
 
 int main() {
 
@@ -11,8 +12,23 @@ int main() {
 	//create view
 	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
+	const int level[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, };
+
+	TileMap map;
+	if(!map.load("tiles.png", sf::Vector2u(15, 15), level, 12, 10))
+		return -1;
+
 	//load tile set
-	sf::Texture tiles;
+/*	sf::Texture tiles;
 	tiles.loadFromFile("tiles.png");
 
 	int xLoc = 20;
@@ -74,7 +90,7 @@ int main() {
 	itemblock.setTextureRect(sf::IntRect(126, 461, 16, 16));
 	itemblock.setPosition(sf::Vector2f(360, 500));
 	itemblock.setScale(40 / itemblock.getLocalBounds().width, 40 / itemblock.getLocalBounds().height);
-	itemblock.setOrigin(20, 20);
+	itemblock.setOrigin(20, 20);*/
 	
 
 
@@ -82,7 +98,7 @@ int main() {
 	sf::Texture bariot;
 	bariot.loadFromFile("smallbario.png");
 
-	Bario bario(bariot, &window, tile, &view);
+	//Bario bario(bariot, &window, tile, &view);
 
 	//load background
 	//make parallax
@@ -106,7 +122,7 @@ int main() {
 				window.close();
 		}
 
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+/*		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 			bario.jump();
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
@@ -118,13 +134,14 @@ int main() {
 		else {
 			bario.noInput();
 		}
-		bario.update();
+		bario.update();*/
 
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
-		bario.draw();
-		for(int i = 0; i < tile.size(); i++) {
+		window.draw(map);
+		//bario.draw();
+/*		for(int i = 0; i < tile.size(); i++) {
 			window.draw(tile[i]);
 		}
 
@@ -134,8 +151,10 @@ int main() {
 		window.draw(groundslope3);
 		window.draw(bigslope);
 		window.draw(bigslope2);
-		window.draw(itemblock);
+		window.draw(itemblock);*/
 
 		window.display();
 	}
+
+	return 0;
 }

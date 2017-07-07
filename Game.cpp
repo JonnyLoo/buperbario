@@ -311,10 +311,10 @@ void Game::run() {
 		bario.draw();
 		window.draw(koopa);
 
-		for(int i = 0; i < tile.size(); i++) {
+/*		for(int i = 0; i < tile.size(); i++) {
 
 			window.draw(tile[i]);
-		}
+		}*/
 
 		window.display();
 	}

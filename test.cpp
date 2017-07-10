@@ -10,21 +10,33 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1400, 900), "Buper Bario");
 
 	//create view
-	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
+	//sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
-	const int level[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*	const int level[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 3, 4, 5, 4, 5, 4, 5, 4, 5, 4, 0,
+						  0, 3, 4, 5, 4, 5, 4, 5, 4, 5, 4, 0,
 						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 8, 9, 10, 10, 9, 8, 9, 10, 10, 9, 8,
 						  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, };
 
 	TileMap map;
 	if(!map.load("tiles.png", sf::Vector2u(15, 15), level, 12, 10))
+		return -1;	*/
+	const int level[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+						  0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
+						  0, 1, 2, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 0,
+						  0, 1, 2, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 1, 0,
+						  0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
+						  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+
+	TileMap map;
+	if(!map.load("tiletest.png", sf::Vector2u(32, 32), level, 16, 8))
 		return -1;
 
 	//load tile set
@@ -137,7 +149,7 @@ int main() {
 		bario.update();*/
 
 		window.clear(sf::Color::Black);
-		window.setView(view);
+		//window.setView(view);
 		window.draw(background);
 		window.draw(map);
 		//bario.draw();

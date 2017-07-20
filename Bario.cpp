@@ -1,6 +1,6 @@
 #include "Unit.hpp"
 
-Bario::Bario(sf::Texture texture, sf::RenderWindow* window, std::vector<sf::Sprite> tiles_, sf::View* view) : Unit(texture, window, tiles_) {
+Bario::Bario(sf::Texture texture, sf::RenderWindow* window, TileMap map, sf::View* view) : Unit(texture, window, map) {
 
 	Bario::setup();
 	v = view;
@@ -142,7 +142,7 @@ void Bario::update() {
 		changeSprite(state);
 	}
 	else
-		s.setPosition(s.getPosition().x, Unit::tiles[0].getPosition().y - 12); //Pls fix this. just gets y position of first tile
+		s.setPosition(s.getPosition().x, 750); //Pls fix this. just gets y position of first tile
 
 	updateView();
 

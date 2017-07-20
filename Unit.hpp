@@ -1,9 +1,10 @@
 #include "Object.hpp"
+#include "TileMap.hpp"
 
 class Unit : public Object {
 
 public:
-	Unit(sf::Texture texture, sf::RenderWindow* w, std::vector<sf::Sprite> tiles);
+	Unit(sf::Texture texture, sf::RenderWindow* w, TileMap map);
 	virtual void setup()=0;
 	virtual void changeState(int new_state)=0;
 	virtual void update()=0;
@@ -12,7 +13,7 @@ public:
 	bool onGround();
 
 protected:
-	std::vector<sf::Sprite> tiles;
+	TileMap map;
 	int state;
 	int animation_delay;
 	float x_vel;
@@ -25,7 +26,7 @@ protected:
 class Bario : public Unit {
 
 public:
-	Bario(sf::Texture texture, sf::RenderWindow* w, std::vector<sf::Sprite> tiles_, sf::View* view);
+	Bario(sf::Texture texture, sf::RenderWindow* w, TileMap map, sf::View* view);
 	void setup();
 	void changeState(int new_state);
 	void jump();
@@ -41,6 +42,7 @@ private:
 	void updateView();
 };
 
+/*
 class Koopa : public Unit {
 
 public:
@@ -49,3 +51,4 @@ public:
 	void changeState(int new_state);
 	void update(Bario b);
 };
+*/

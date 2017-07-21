@@ -141,8 +141,6 @@ void Bario::update() {
 
 	int on_ground = onGround();
 
-	std::cout << "onGround: " << on_ground << std::endl;
-
 	if (on_ground < 0) {
 		state = 4;
 		changeSprite(state);

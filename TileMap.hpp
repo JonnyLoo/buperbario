@@ -64,7 +64,7 @@ public:
 					int space = 2;
 					int spaceRegion = 3 * (tv / 3); //Space between every region, such as between ice and grass regions
 					int startX = 9;
-					int startY = 5;
+					int startY = 6;
 					quad[0].texCoords = sf::Vector2f(startX + tu * (tileSize.x + space), startY + spaceRegion + tv * (tileSize.y + space));
 					quad[1].texCoords = sf::Vector2f(startX + tu * (tileSize.x + space) + tileSize.x, startY + spaceRegion + tv * (tileSize.y + space));
 					quad[2].texCoords = sf::Vector2f(startX + tu * (tileSize.x + space) + tileSize.x, startY + spaceRegion + tv * (tileSize.y + space) + tileSize.y);

@@ -14,6 +14,10 @@ public:
         if (!m_tileset.loadFromFile(tileset))
             return false;
 
+		TileMap::tiles = tiles;
+		TileMap::width = width;
+
+
         // resize the vertex array to fit the level size
         m_vertices.setPrimitiveType(sf::Quads);
         m_vertices.resize(width * height * 4);
@@ -23,9 +27,10 @@ public:
             for (unsigned int j = 0; j < height; ++j)
             {
 				//Scales tile to be tileLength long and wide
-				int tileLength = 40;
-				int scaleTileX = tileLength / tileSize.x;
-				int scaleTileY = tileLength / tileSize.y;
+				double tileLength = 40.0;
+				TileMap::tileLength = tileLength;
+				double scaleTileX = tileLength / tileSize.x;
+				double scaleTileY = tileLength / tileSize.y;
 
 				// get a pointer to the current tile's quad
 				sf::Vertex* quad = &m_vertices[(i + j * width) * 4];
@@ -75,11 +80,21 @@ public:
         return true;
     }
 
-	//Checks if at this pos, unit is on or in a tile
-	bool onTile(int x, int y)
+	int getTileType(int x, int y)
 	{
-		return y > 750;
+		int xTileLoc = x / tileLength;
+		int yTileLoc = y / tileLength;
+
+		int arrayPos = yTileLoc * width + xTileLoc;
+
+		return tiles[arrayPos];
 	}
+
+	int getTileLength()
+	{
+		return tileLength;
+	}
+
 
 private:
 
@@ -97,6 +112,9 @@ private:
 
     sf::VertexArray m_vertices;
     sf::Texture m_tileset;
+	int width;
+	int tileLength;
+	const int* tiles;
 };
 
 #endif

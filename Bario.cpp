@@ -40,7 +40,7 @@ void Bario::setup() {
 	gravity = 1.5;
 
 	changeSprite(0);
-	s.setPosition(sf::Vector2f(30, w->getSize().y - 55));
+	s.setPosition(sf::Vector2f(30, w->getSize().y - 200));
 	s.setScale(20 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
 	s.setOrigin(10, 10);
 }
@@ -130,24 +130,32 @@ void Bario::noInput() {
 }
 
 void Bario::update() {
+	if (y_vel < -25)
+		y_vel = -25;
 	y_vel += gravity;
-	if (y_vel > 0 && onGround()) {
+	if (y_vel > 0 && onGround() >= 0) {
 		y_vel = 0.;
 	}
 
 	s.move(x_vel, y_vel);
 
-	if (!onGround()) {
+	int on_ground = onGround();
+
+	std::cout << "onGround: " << on_ground << std::endl;
+
+	if (on_ground < 0) {
 		state = 4;
 		changeSprite(state);
 	}
 	else
-		s.setPosition(s.getPosition().x, 750); //Pls fix this. just gets y position of first tile
+	{
+		s.setPosition(s.getPosition().x, on_ground - 10);
+	}
 
 	updateView();
 
 	//Tired of Bario falling forever. Reset when falls to bottom of screen
-	if (s.getPosition().y > w->getSize().y) {
+	if (s.getPosition().y > 2000) {
 		setup();
 	}
 }

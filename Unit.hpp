@@ -10,7 +10,7 @@ public:
 	virtual void update()=0;
 	void updateSpeed();
 	void flip();
-	bool onGround();
+	int onGround();
 
 protected:
 	TileMap map;

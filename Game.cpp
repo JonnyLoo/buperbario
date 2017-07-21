@@ -42,20 +42,43 @@ void Game::run() {
 	//create view
 	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
-	//load tile set
-	sf::Texture tiles;
-	tiles.loadFromFile("tiles.png");
+	//-1 = Nothing ; 
+	//#0 = left; #1 = mid; #2 = right ; #3 = steepslope 
+	//0# = icetop; 1# = icemid; 2# = icebottom || 3# = grasstop ; 4# = grassmid ; 5# = grassbottom || etc
+	const int level[] = {	
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		30, 31, 31, 31, 31, 31, 31, 32, -1, -1, 00, 03, -1, -1, -1, -1,
+		40, 41, 41, 41, 41, 41, 41, 42, -1, -1, 10, 13, 01, 01, 01, 02,
+		40, 41, 41, 41, 41, 41, 41, 42, -1, -1, 10, 11, 11, 11, 11, 12,
+		40, 41, 41, 41, 41, 41, 41, 42, -1, -1, 10, 11, 11, 11, 11, 12,
+		50, 51, 51, 51, 51, 51, 51, 52, -1, -1, 20, 21, 21, 21, 21, 22,
+	};
 
-	int xLoc = 20;
-	std::vector<sf::Sprite> tile(50);
-	for (int i = 0; i < tile.size(); i++) {
-
-		tile[i].setTexture(tiles);
-		tile[i].setTextureRect(sf::IntRect(28, 64, 15, 15));
-		tile[i].setPosition(sf::Vector2f(xLoc, window.getSize().y - 35));
-		tile[i].setScale(20 / tile[i].getLocalBounds().width, 20 / tile[i].getLocalBounds().height);
-		xLoc += 20;
-	}
+	TileMap map;
+	if(!map.load("tiles.png", sf::Vector2u(16, 16), level, 16, 28))
+		return;
 
 	//vector for bario walking animations
 	sf::Texture bariot;
@@ -66,26 +89,7 @@ void Game::run() {
 	int delay = 3;
 	int count = 0;*/
 
-	Bario bario(bariot, &window, tile, &view);
-
-	//level layout
-	float numTilesX = (window.getSize().x / tile[0].getLocalBounds().width) + 2; //102
-	float numTilesY = (window.getSize().y / tile[0].getLocalBounds().height) + 2; //62
-	std::vector< std::vector<float> > map;
-	map.resize(numTilesY, std::vector<float>(numTilesX, 00));
-
-	std::cout << numTilesX << std::endl << numTilesY << std::endl;
-
-   /*{{00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00},
-	  {00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00}}; */
+	Bario bario(bariot, &window, map, &view);
 
 	//load background
 	//make parallax
@@ -167,8 +171,8 @@ void Game::run() {
 
 		//Checks if Bario is standing on any tiles
 		//bool checkOnGround = true;
-		bool checkOnGround_koopa = true;
-		std::vector<sf::Sprite>::iterator it = tile.begin();
+		//bool checkOnGround_koopa = true;
+		//std::vector<sf::Sprite>::iterator it = tile.begin();
 		//while (checkOnGround && it != tile.end())
 		//{
 		//	if ((*it).getPosition().x > bario.getPosition().x)
@@ -200,7 +204,7 @@ void Game::run() {
 		//}
 
 		//it = tile.begin();
-		while(checkOnGround_koopa && it != tile.end()) {
+		/*while(checkOnGround_koopa && it != tile.end()) {
 
 			if ((*it).getPosition().x > koopa.getPosition().x)
 			{
@@ -251,7 +255,7 @@ void Game::run() {
 			if(koopaXVel > koopaXMax)
 				koopaXVel = koopaXMax;
 			koopa.setScale(-1, 1);
-		}
+		}*/
 
 		//int collision = collisionCheck(bario, koopa);
 
@@ -267,7 +271,7 @@ void Game::run() {
 		//		koopaXAccel = 0;
 		//}
 
-		koopa.move(koopaXVel, 0);
+		/*koopa.move(koopaXVel, 0);
 
 		//koopa animation
 		koopa_count++;
@@ -291,7 +295,7 @@ void Game::run() {
 					koopa.setTextureRect(sf::IntRect(42, 12, 18, 31));	
 					break;
 			}	
-		}
+		}*/
 
 /*		//view shifts when bario leaves screen
 		if(bario.s.getPosition().x >= view.getCenter().x + 200) {
@@ -308,14 +312,11 @@ void Game::run() {
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
+		window.draw(map);
 		bario.draw();
 		window.draw(koopa);
 
-		for(int i = 0; i < tile.size(); i++) {
-
-			window.draw(tile[i]);
-		}
-
+		
 		window.display();
 	}
 }

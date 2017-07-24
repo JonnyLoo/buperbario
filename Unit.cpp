@@ -27,28 +27,60 @@ void Unit::flip() {
 		s.setScale(1, 1);
 }
 
-//Returns -1 if unit not standing on tile. Else returns yPos of tile
-int Unit::onGround() {
-	int xPos = s.getPosition().x;
+//Returns -1 if unit not running into a tile. Else return new xPos
+int Unit::collideX() {
+	if (x_vel == 0)
+		return -1;
+
+	int buffer;
+	if (x_vel > 0)
+		buffer = 15;
+	else
+		buffer = -15;
+	int xPos = s.getPosition().x + buffer;
 	int yPos = s.getPosition().y;
+
 	int tileNum = map.getTileType(xPos, yPos);
+	int tileType = tileNum % 10;
+	int floorType = tileNum / 10;
 
+	if (tileNum == -1 || tileType == 3)
+		return -1;
+
+	int xDif = xPos % map.getTileLength();
+	int yDif = yPos % map.getTileLength();
+
+	if (x_vel < 0)
+		return xPos - xDif + map.getTileLength();
+	else
+		return xPos - xDif;
+}
+
+//Returns -1 if unit not standing on tile. Else returns yPos of tile
+int Unit::collideY() {
+	int buffer;
+	if (y_vel >= 0)
+		buffer = 15;
+	else
+		buffer = -15;
+	int xPos = s.getPosition().x;
+	int yPos = s.getPosition().y + buffer;
+
+	int tileNum = map.getTileType(xPos, yPos);
 	if (tileNum < 0)
-	{
-		int buffer = 15;
-		xPos = s.getPosition().x;
-		yPos = s.getPosition().y + buffer;
-
-		tileNum = map.getTileType(xPos, yPos);
-		if (tileNum < 0)
-			return -1;
-	}
+		return -1;
 
 	int tileType = tileNum % 10;
 	int floorType = tileNum / 10;
 
 	int xDif = xPos % map.getTileLength();
 	int yDif = yPos % map.getTileLength();
+
+	if (y_vel < 0)
+	{
+		y_vel = 0;
+		return yPos - yDif + map.getTileLength();
+	}
 
 
 	if (floorType % 3 == 0)
@@ -57,15 +89,10 @@ int Unit::onGround() {
 			return yPos - yDif;
 		if (tileType == 3)
 		{
-			if (yDif < xDif)
-				return -1;
+			if (map.getTileLength() - 5 < xDif)
+				return yPos - yDif + map.getTileLength();
 			else
-			{
-				if (map.getTileLength() - 5 < xDif)
-					return yPos - yDif - map.getTileLength();
-				else
-					return yPos - yDif + xDif;
-			}
+				return yPos - yDif + xDif;
 		}
 	}
 	else if (floorType % 3 == 1)
@@ -78,7 +105,14 @@ int Unit::onGround() {
 		}
 
 	}
+}
 
+bool Unit::onGround()
+{
+	return collideY() != -1;
+}
 
-
+bool Unit::hitWall()
+{
+	return collideX() > -1;
 }

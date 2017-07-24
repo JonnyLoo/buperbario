@@ -72,48 +72,53 @@ void Bario::jump() {
 }
 
 void Bario::moveLeft() {
-	if (!(s.getPosition().x <= 15)) {
-
-		x_vel -= x_accel;
-		if (x_vel < -x_max_vel)
-			x_vel = -x_max_vel;
-	}
-	else
-		x_vel = 0;
-
-	animation_count++;
-	if (animation_count == 3) {
-
-		animation_count = 0;
-		state++;
-		if (state > 2)
-			state = 1;
-	}
-	changeSprite(state);
-	if (s.getScale().x > 0)
+	if (!hitWall())
 	{
-		flip();
-	}
+		if (!(s.getPosition().x <= 15)) {
 
+			x_vel -= x_accel;
+			if (x_vel < -x_max_vel)
+				x_vel = -x_max_vel;
+		}
+		else
+			x_vel = 0;
+
+		animation_count++;
+		if (animation_count == 3) {
+
+			animation_count = 0;
+			state++;
+			if (state > 2)
+				state = 1;
+		}
+		changeSprite(state);
+		if (s.getScale().x > 0)
+		{
+			flip();
+		}
+	}
 }
 
 void Bario::moveRight() {
-	x_vel += x_accel;
-	if (x_vel > x_max_vel)
-		x_vel = x_max_vel;
-
-	animation_count++;
-	if (animation_count == 3) {
-
-		animation_count = 0;
-		state++;
-		if (state > 2)
-			state = 1;
-	}
-	changeSprite(state);
-	if (s.getScale().x < 0)
+	if (!hitWall())
 	{
-		flip();
+		x_vel += x_accel;
+		if (x_vel > x_max_vel)
+			x_vel = x_max_vel;
+
+		animation_count++;
+		if (animation_count == 3) {
+
+			animation_count = 0;
+			state++;
+			if (state > 2)
+				state = 1;
+		}
+		changeSprite(state);
+		if (s.getScale().x < 0)
+		{
+			flip();
+		}
 	}
 }
 
@@ -124,30 +129,47 @@ void Bario::noInput() {
 		x_vel++;
 	else
 		x_vel = 0;
-
 	state = 0;
 	changeSprite(state);
 }
 
 void Bario::update() {
+	if (hitWall())
+		x_vel = 0;
+
 	if (y_vel < -25)
 		y_vel = -25;
 	y_vel += gravity;
-	if (y_vel > 0 && onGround() >= 0) {
+	if (y_vel > 0 && onGround()) {
 		y_vel = 0.;
 	}
 
 	s.move(x_vel, y_vel);
 
-	int on_ground = onGround();
+	int newXPos = collideX();
+	if (newXPos == -1)
+		newXPos = s.getPosition().x;
+	else
+	{
+		if (x_vel > 0)
+			newXPos -= 15;
+		else
+			newXPos += 15;
+	}
 
-	if (on_ground < 0) {
+	int newYPos = collideY();
+	if (y_vel >= 0)
+		newYPos -= 10;
+	else
+		newYPos += 10;
+
+	if (!onGround()) {
 		state = 4;
 		changeSprite(state);
 	}
 	else
 	{
-		s.setPosition(s.getPosition().x, on_ground - 10);
+		s.setPosition(newXPos, newYPos);
 	}
 
 	updateView();

@@ -10,7 +10,11 @@ public:
 	virtual void update()=0;
 	void updateSpeed();
 	void flip();
-	int onGround();
+	bool onGround();
+	bool hitWall();
+	int collideX();
+	int collideY();
+
 
 protected:
 	TileMap map;

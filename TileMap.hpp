@@ -80,6 +80,7 @@ public:
         return true;
     }
 
+	//Gets tile type of tile at position (in pixels) x,y
 	int getTileType(int x, int y)
 	{
 		int xTileLoc = x / tileLength;
@@ -88,6 +89,15 @@ public:
 		int arrayPos = yTileLoc * width + xTileLoc;
 
 		return tiles[arrayPos];
+	}
+
+	//Gets pixel position of (x,y) grid pos of tile
+	sf::Vector2f getPosition(int x, int y)
+	{
+		int xPos = x * tileLength;
+		int yPos = y * tileLength;
+
+		return sf::Vector2f(xPos, yPos);
 	}
 
 	int getTileLength()

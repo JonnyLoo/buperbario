@@ -31,6 +31,10 @@ void Bario::changeSprite(int new_sprite) {
 	s.setTextureRect(sprite);
 }
 
+void Bario::changeState(int new_state) {
+
+}
+
 void Bario::setup() {
 
 	animation_delay = 3;
@@ -58,11 +62,6 @@ void Bario::updateView() {
 		else
 			v->setCenter(s.getPosition().x + 200, 500);
 	}
-}
-
-void Bario::changeState(int new_state) {
-
-
 }
 
 void Bario::jump() {
@@ -97,6 +96,8 @@ void Bario::moveLeft() {
 			flip();
 		}
 	}
+	else
+		y_vel = 0;
 }
 
 void Bario::moveRight() {
@@ -120,6 +121,8 @@ void Bario::moveRight() {
 			flip();
 		}
 	}
+	else
+		y_vel = 0;
 }
 
 void Bario::noInput() {

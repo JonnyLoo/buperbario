@@ -4,7 +4,7 @@ RM=rm -f
 LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
 OBJS=main.cpp Game.cpp Object.cpp Unit.cpp Bario.cpp
-OBJST=test.cpp Object.cpp Unit.cpp Bario.cpp
+OBJST=test.cpp Object.cpp Unit.cpp Bario.cpp Koopa.cpp
 
 all: bario
 

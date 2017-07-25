@@ -12,21 +12,6 @@ int main() {
 	//create view
 	sf::View view(sf::Vector2f(600, 500), sf::Vector2f(1200, 800));
 
-/*	const int level[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-						  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-						  0, 3, 4, 5, 4, 5, 4, 5, 4, 5, 4, 0,
-						  0, 3, 4, 5, 4, 5, 4, 5, 4, 5, 4, 0,
-						  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-						  0, 8, 9, 10, 10, 9, 8, 9, 10, 10, 9, 8,
-						  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, };
-
-	TileMap map;
-	if(!map.load("tiles.png", sf::Vector2u(15, 15), level, 12, 10))
-		return -1;	*/
-
 	//-1 = Nothing ; 
 	//#0 = left; #1 = mid; #2 = right ; #3 = steepslope 
 	//0# = icetop; 1# = icemid; 2# = icebottom || 3# = grasstop ; 4# = grassmid ; 5# = grassbottom || etc
@@ -46,7 +31,7 @@ int main() {
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //15
 		-1, -1, -1, -1, -1, -1, -1, 30, 31, 31, 32, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 		-1, -1, -1, -1, -1, -1, -1, 50, 51, 51, 52, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -54,6 +39,8 @@ int main() {
 		40, 41, 41, 41, 41, 41, 41, 42, -1, -1, 10, 13, 01, 01, 01, 02, -1, -1, -1, -1, //20
 		40, 41, 41, 41, 41, 41, 41, 42, -1, -1, 10, 11, 11, 11, 11, 12, -1, -1, -1, -1,
 		50, 51, 51, 51, 51, 51, 51, 52, -1, -1, 20, 21, 21, 21, 21, 22, -1, -1, -1, -1,
+
+	//  0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19
 		};
 
 	TileMap map;
@@ -130,8 +117,11 @@ int main() {
 	//vector for bario walking animations
 	sf::Texture bariot;
 	bariot.loadFromFile("smallbario.png");
-
 	Bario bario(bariot, &window, map, &view);
+
+	sf::Texture koopat;
+	koopat.loadFromFile("koopa.png");
+	Koopa koopa(koopat, &window, map, map.getPosition(7, 15));
 
 	//load background
 	//make parallax
@@ -168,23 +158,15 @@ int main() {
 			bario.noInput();
 		}
 		bario.update();
+		koopa.update();
 
 		window.clear(sf::Color::Black);
 		window.setView(view);
 		window.draw(background);
 		window.draw(map);
 		bario.draw();
-/*		for(int i = 0; i < tile.size(); i++) {
-			window.draw(tile[i]);
-		}
+		koopa.draw();
 
-		window.draw(groundfill);
-		window.draw(groundslope);
-		window.draw(groundslope2);
-		window.draw(groundslope3);
-		window.draw(bigslope);
-		window.draw(bigslope2);
-		window.draw(itemblock);*/
 
 		window.display();
 	}

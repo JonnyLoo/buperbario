@@ -14,10 +14,9 @@ public:
 	bool hitWall();
 	int collideX();
 	int collideY();
-
+	TileMap map;
 
 protected:
-	TileMap map;
 	int state;
 	int animation_delay;
 	float x_vel;
@@ -46,13 +45,15 @@ private:
 	void updateView();
 };
 
-/*
 class Koopa : public Unit {
 
 public:
-	Koopa(sf::Texture texture, sf::RenderWindow w);
+	Koopa(sf::Texture texture, sf::RenderWindow* w, TileMap map, sf::Vector2f pos);
 	void setup();
 	void changeState(int new_state);
-	void update(Bario b);
+	void update();
+
+private:
+	int animation_count;
 };
-*/
+

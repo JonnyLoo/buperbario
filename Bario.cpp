@@ -23,6 +23,9 @@ void Bario::changeSprite(int new_sprite) {
 	case 4: //jumping
 		sprite = sf::IntRect(180, 6, 20, 22);
 		break;
+	case 5: //death
+		sprite = sf::IntRect(196, 34, 20, 22);
+		break;
 	default:
 		sprite = sf::IntRect(10, 6, 20, 22);
 		break;
@@ -47,6 +50,11 @@ void Bario::setup() {
 	s.setPosition(sf::Vector2f(30, w->getSize().y - 200));
 	s.setScale(20 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
 	s.setOrigin(10, 10);
+}
+
+void Bario::die() {
+	changeState(2);
+	setup();
 }
 
 void Bario::updateView() {
@@ -179,6 +187,6 @@ void Bario::update() {
 
 	//Tired of Bario falling forever. Reset when falls to bottom of screen
 	if (s.getPosition().y > 2000) {
-		setup();
+		die();
 	}
 }

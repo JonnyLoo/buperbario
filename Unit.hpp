@@ -8,13 +8,13 @@ public:
 	virtual void setup()=0;
 	virtual void changeState(int new_state)=0;
 	virtual void update()=0;
+	virtual void die()=0;
 	void updateSpeed();
 	void flip();
 	bool onGround();
 	bool hitWall();
 	int collideX();
 	int collideY();
-	TileMap map;
 
 protected:
 	int state;
@@ -24,6 +24,7 @@ protected:
 	float x_accel;
 	float x_max_vel;
 	float gravity;
+	TileMap map;
 };
 
 class Bario : public Unit {
@@ -32,6 +33,7 @@ public:
 	Bario(sf::Texture texture, sf::RenderWindow* w, TileMap map, sf::View* view);
 	void setup();
 	void changeState(int new_state);
+	void die();
 	void jump();
 	void moveLeft();
 	void moveRight();
@@ -52,6 +54,7 @@ public:
 	void setup();
 	void changeState(int new_state);
 	void update();
+	void die();
 
 private:
 	int animation_count;

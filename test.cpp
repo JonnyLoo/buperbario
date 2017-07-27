@@ -134,41 +134,59 @@ int main() {
 	background.setPosition(0, window.getSize().y - 800);
 	background.setTextureRect(sf::IntRect(0, 0, 4000, 900)); 
 
+	bool pause = false;
+	int pausePress = 0;
+
 	//game loop
 	while(window.isOpen()) {
-
 		//handle window closing event
 		sf::Event e;
-		while(window.pollEvent(e)) {
+		while (window.pollEvent(e)) {
 
-			if(e.type == sf::Event::Closed)
+			if (e.type == sf::Event::Closed)
 				window.close();
 		}
 
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			bario.jump();
-		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			bario.moveRight();
-		}
-		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			bario.moveLeft();
-		}
-		else {
-			bario.noInput();
-		}
-		bario.update();
-		koopa.update();
+		if (!pause)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+				bario.jump();
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				bario.moveRight();
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+				bario.moveLeft();
+			}
+			else {
+				bario.noInput();
+			}
+			//if (bario.attack(koopa) == 0)
+			//	koopa.die();
 
-		window.clear(sf::Color::Black);
-		window.setView(view);
-		window.draw(background);
-		window.draw(map);
-		bario.draw();
-		koopa.draw();
+			bario.update();
+			koopa.update();
+
+			window.clear(sf::Color::Black);
+			window.setView(view);
+			window.draw(background);
+			window.draw(map);
+			bario.draw();
+			koopa.draw();
 
 
-		window.display();
+			window.display();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+		{
+			if (pausePress == 0)
+			{
+				pause = !pause;
+				pausePress = 1;
+			}
+		}
+		else
+			pausePress = 0;
 	}
 
 	return 0;

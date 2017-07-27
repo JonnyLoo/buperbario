@@ -34,11 +34,12 @@ int Unit::collideX() {
 
 	int buffer;
 	if (x_vel > 0)
-		buffer = 15;
-	else
-		buffer = -15;
+		buffer = s.getLocalBounds().width / 2 + 5;
+	else if(x_vel < 0)
+		buffer = -(s.getLocalBounds().width / 2 + 5);
+
 	int xPos = s.getPosition().x + buffer;
-	int yPos = s.getPosition().y;
+	int yPos = s.getPosition().y - s.getLocalBounds().height / 2;
 
 	int tileNum = map.getTileType(xPos, yPos);
 	int tileType = tileNum % 10;
@@ -58,17 +59,25 @@ int Unit::collideX() {
 
 //Returns -1 if unit not standing on tile. Else returns yPos of tile
 int Unit::collideY() {
-	int buffer;
+	int yBuffer;
 	if (y_vel >= 0)
-		buffer = 15;
+		yBuffer = 15;
 	else
-		buffer = -15;
-	int xPos = s.getPosition().x;
-	int yPos = s.getPosition().y + buffer;
+		yBuffer = -15;
+
+	int xBuffer = s.getLocalBounds().width / 2;
+
+	int xPos = s.getPosition().x + xBuffer;
+	int yPos = s.getPosition().y + yBuffer;
 
 	int tileNum = map.getTileType(xPos, yPos);
 	if (tileNum < 0)
-		return -1;
+	{
+		xPos = s.getPosition().x - xBuffer;
+		tileNum = map.getTileType(xPos, yPos);
+		if (tileNum < 0)
+			return -1;
+	}
 
 	int tileType = tileNum % 10;
 	int floorType = tileNum / 10;

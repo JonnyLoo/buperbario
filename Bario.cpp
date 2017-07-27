@@ -12,22 +12,22 @@ void Bario::changeSprite(int new_sprite) {
 
 	switch (new_sprite) {
 	case 0: //standing 
-		sprite = sf::IntRect(10, 6, 20, 22);
+		sprite = sf::IntRect(10, 7, 14, 20);
 		break;
 	case 1: //moving 1
-		sprite = sf::IntRect(30, 6, 20, 22);
+		sprite = sf::IntRect(32, 8, 15, 19);
 		break;
 	case 2: //moving 2
-		sprite = sf::IntRect(53, 5, 20, 22);
+		sprite = sf::IntRect(55, 7, 14, 20);
 		break;
 	case 4: //jumping
-		sprite = sf::IntRect(180, 6, 20, 22);
+		sprite = sf::IntRect(184, 5, 16, 22);
 		break;
 	case 5: //death
-		sprite = sf::IntRect(196, 34, 20, 22);
+		sprite = sf::IntRect(196, 34, 16, 24);
 		break;
 	default:
-		sprite = sf::IntRect(10, 6, 20, 22);
+		sprite = sf::IntRect(10, 7, 14, 20);
 		break;
 	}
 
@@ -39,18 +39,27 @@ void Bario::changeState(int new_state) {
 }
 
 void Bario::setup() {
-
 	animation_delay = 3;
 	animation_count = 0;
 	x_max_vel = 9;
 	x_accel = .5;
 	gravity = 1.5;
+	state = 0;
 
 	changeSprite(0);
 	s.setPosition(sf::Vector2f(30, w->getSize().y - 200));
-	s.setScale(20 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
-	s.setOrigin(10, 10);
+	s.setScale(16 / s.getLocalBounds().width, 20 / s.getLocalBounds().height);
+	s.setOrigin(s.getLocalBounds().width / 2, s.getLocalBounds().height / 2);
 }
+
+/*
+//return -1 for no collision, 0 for hit enemy, 1 for get hit
+int Bario::attack(Unit enemy) {
+	if(s.getGlobalBounds().intersects(enemy.setup.getGlobalBounds()))
+		return 0;
+	return -1;
+}
+*/
 
 void Bario::die() {
 	changeState(2);
@@ -134,12 +143,15 @@ void Bario::moveRight() {
 }
 
 void Bario::noInput() {
-	if (x_vel > 0)
+	if (x_vel < 1 && x_vel > -1)
+		x_vel = 0;
+	else if (x_vel > 0)
 		x_vel--;
 	else if (x_vel < 0)
 		x_vel++;
 	else
 		x_vel = 0;
+	
 	state = 0;
 	changeSprite(state);
 }
@@ -162,17 +174,19 @@ void Bario::update() {
 		newXPos = s.getPosition().x;
 	else
 	{
+		int xPosBuffer = s.getLocalBounds().width / 2;
 		if (x_vel > 0)
-			newXPos -= 15;
+			newXPos -= xPosBuffer;
 		else
-			newXPos += 15;
+			newXPos += xPosBuffer;
 	}
 
 	int newYPos = collideY();
+	int yPosBuffer = s.getLocalBounds().height / 2;
 	if (y_vel >= 0)
-		newYPos -= 10;
+		newYPos -= yPosBuffer;
 	else
-		newYPos += 10;
+		newYPos += yPosBuffer;
 
 	if (!onGround()) {
 		state = 4;
@@ -186,7 +200,7 @@ void Bario::update() {
 	updateView();
 
 	//Tired of Bario falling forever. Reset when falls to bottom of screen
-	if (s.getPosition().y > 2000) {
+	if (s.getPosition().y > w->getSize().y) {
 		die();
 	}
 }

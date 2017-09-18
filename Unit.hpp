@@ -39,7 +39,7 @@ public:
 	void moveRight();
 	void noInput();
 	void update();
-	//int attack(Unit enemy);
+	int attack(Unit* enemy);
 
 private:
 	sf::View* v;

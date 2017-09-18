@@ -39,15 +39,18 @@ void Koopa::changeState(int new_state) {
 }
 
 void Koopa::die() {
-	changeState(2);
-	state = 1;
-	y_vel = -10;
-	x_vel = 0;
+	if (state != 2)
+	{
+		changeState(2);
+		state = 2;
+		y_vel = -10;
+		x_vel = 0;
+	}	
 }
 
 void Koopa::update() {
 	//Alive
-//	if (state == 0){
+	if (state != 2){
 		if (y_vel < -25)
 			y_vel = -25;
 		y_vel += gravity;
@@ -100,15 +103,15 @@ void Koopa::update() {
 		if (onGround()) {
 			s.setPosition(newXPos, newYPos);
 		}
-//	}
+	}
 
-	/*
+	
 	//Dead. was gonna create some death animation
-	else if (state == 1)
+	else if (state == 2)
 	{
 		y_vel += gravity;
 		s.move(x_vel, y_vel);
 	}
-	*/
+	
 
 }

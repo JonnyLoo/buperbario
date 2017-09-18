@@ -52,14 +52,15 @@ void Bario::setup() {
 	s.setOrigin(s.getLocalBounds().width / 2, s.getLocalBounds().height / 2);
 }
 
-/*
+
 //return -1 for no collision, 0 for hit enemy, 1 for get hit
-int Bario::attack(Unit enemy) {
-	if(s.getGlobalBounds().intersects(enemy.setup.getGlobalBounds()))
+int Bario::attack(Unit* enemy) {
+
+	if(s.getGlobalBounds().intersects((*enemy).s.getGlobalBounds()))
 		return 0;
 	return -1;
 }
-*/
+
 
 void Bario::die() {
 	changeState(2);

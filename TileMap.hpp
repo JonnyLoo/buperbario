@@ -27,8 +27,7 @@ public:
             for (unsigned int j = 0; j < height; ++j)
             {
 				//Scales tile to be tileLength long and wide
-				double tileLength = 40.0;
-				TileMap::tileLength = tileLength;
+				TileMap::tileLength = 40.0;
 				double scaleTileX = tileLength / tileSize.x;
 				double scaleTileY = tileLength / tileSize.y;
 
@@ -46,24 +45,8 @@ public:
 				
 				if (tileNumber != -1)
 				{
-					/*
-					// find its position in the tileset texture
-					int tu = tileNumber % (m_tileset.getSize().x / tileSize.x);
-					int tv = tileNumber / (m_tileset.getSize().x / tileSize.x);
-					*/
-
 					int tu = tileNumber % 10;
 					int tv = tileNumber / 10;
-
-
-
-					/*
-					// define its 4 texture coordinates
-					quad[0].texCoords = sf::Vector2f(tu * tileSize.x, tv * tileSize.y);
-					quad[1].texCoords = sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y);
-					quad[2].texCoords = sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y);
-					quad[3].texCoords = sf::Vector2f(tu * tileSize.x, (tv + 1) * tileSize.y);
-					*/
 
 					// define its 4 texture coordinates for tiles.png
 					int space = 2;

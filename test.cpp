@@ -4,6 +4,10 @@
 #include "Unit.hpp"
 #include "TileMap.hpp"
 
+void setup() {
+
+}
+
 int main() {
 
 	//create window
@@ -161,8 +165,8 @@ int main() {
 			else {
 				bario.noInput();
 			}
-			//if (bario.attack(koopa) == 0)
-			//	koopa.die();
+			if (bario.attack(&koopa) == 0)
+				koopa.die();
 
 			bario.update();
 			koopa.update();
@@ -187,6 +191,9 @@ int main() {
 		}
 		else
 			pausePress = 0;
+
+		if(sf::Keyboard::isKeyPressed(sf::Keyboaord::R))
+
 	}
 
 	return 0;

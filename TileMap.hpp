@@ -27,7 +27,8 @@ public:
             for (unsigned int j = 0; j < height; ++j)
             {
 				//Scales tile to be tileLength long and wide
-				TileMap::tileLength = 40.0;
+				double tileLength = 40.0;
+				TileMap::tileLength = tileLength;
 				double scaleTileX = tileLength / tileSize.x;
 				double scaleTileY = tileLength / tileSize.y;
 

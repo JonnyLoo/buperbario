@@ -1,8 +1,8 @@
 #include "Unit.hpp"
 
 Koopa::Koopa(sf::Texture texture, sf::RenderWindow* w, TileMap map, sf::Vector2f pos) : Unit(texture, w, map){
+	startPos = pos;
 	Koopa::setup();
-	s.setPosition(pos);
 }
 
 void Koopa::setup() {
@@ -15,20 +15,21 @@ void Koopa::setup() {
 	changeState(0);
 	s.setScale(20 / s.getLocalBounds().width, 30 / s.getLocalBounds().height);
 	s.setOrigin(s.getLocalBounds().width / 2, s.getLocalBounds().height / 2);
+	s.setPosition(startPos);
 }
 
 void Koopa::changeState(int new_state) {
 	sf::IntRect sprite;
 
 	switch (new_state) {
+	case -1: //dead
+		sprite = sf::IntRect(36, 0, 17, 27);
+		break;
 	case 0: //moving 1
 		sprite = sf::IntRect(0, 0, 17, 27);
 		break;
 	case 1: //moving 2
 		sprite = sf::IntRect(18, 0, 17, 27);
-		break;
-	case 2: //dead
-		sprite = sf::IntRect(36, 0, 17, 27);
 		break;
 	default:
 		sprite = sf::IntRect(0, 0, 17, 27);
@@ -39,10 +40,10 @@ void Koopa::changeState(int new_state) {
 }
 
 void Koopa::die() {
-	if (state != 2)
+	if (state != -1)
 	{
-		changeState(2);
-		state = 2;
+		changeState(-1);
+		state = -1;
 		y_vel = -10;
 		x_vel = 0;
 	}	
@@ -50,7 +51,7 @@ void Koopa::die() {
 
 void Koopa::update() {
 	//Alive
-	if (state != 2){
+	if (state != -1){
 		if (y_vel < -25)
 			y_vel = -25;
 		y_vel += gravity;
@@ -106,8 +107,8 @@ void Koopa::update() {
 	}
 
 	
-	//Dead. was gonna create some death animation
-	else if (state == 2)
+	//Dead
+	else if (state == -1)
 	{
 		y_vel += gravity;
 		s.move(x_vel, y_vel);

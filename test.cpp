@@ -125,7 +125,7 @@ int main() {
 
 	sf::Texture koopat;
 	koopat.loadFromFile("koopa.png");
-	Koopa koopa(koopat, &window, map, map.getPosition(7, 15));
+	Koopa koopa(koopat, &window, map, map.getPosition(7, 16));
 
 	//load background
 	//make parallax
@@ -153,23 +153,31 @@ int main() {
 
 		if (!pause)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-				bario.jump();
+			if (bario.state != -1)
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+					bario.jump();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+					bario.moveRight();
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+					bario.moveLeft();
+				}
+				else {
+					bario.noInput();
+				}
+
+				int hit = bario.attack(&koopa);
+				if (hit == 0)
+					koopa.die();
+				else if (hit == 1)
+					bario.die();
+				koopa.update();
+
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-				bario.moveRight();
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-				bario.moveLeft();
-			}
-			else {
-				bario.noInput();
-			}
-			if (bario.attack(&koopa) == 0)
-				koopa.die();
 
 			bario.update();
-			koopa.update();
 
 			window.clear(sf::Color::Black);
 			window.setView(view);
@@ -192,7 +200,11 @@ int main() {
 		else
 			pausePress = 0;
 
-		if(sf::Keyboard::isKeyPressed(sf::Keyboaord::R))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			koopa.setup();
+		}
+
 
 	}
 

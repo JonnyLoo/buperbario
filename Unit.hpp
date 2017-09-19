@@ -15,9 +15,9 @@ public:
 	bool hitWall();
 	int collideX();
 	int collideY();
+	int state;
 
 protected:
-	int state;
 	int animation_delay;
 	float x_vel;
 	float y_vel;
@@ -59,5 +59,6 @@ public:
 
 private:
 	int animation_count;
+	sf::Vector2f startPos;
 };
 

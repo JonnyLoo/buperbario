@@ -11,6 +11,9 @@ void Bario::changeSprite(int new_sprite) {
 	sf::IntRect sprite;
 
 	switch (new_sprite) {
+	case -1: //death
+		sprite = sf::IntRect(196, 34, 16, 24);
+		break;
 	case 0: //standing 
 		sprite = sf::IntRect(10, 7, 14, 20);
 		break;
@@ -22,9 +25,6 @@ void Bario::changeSprite(int new_sprite) {
 		break;
 	case 4: //jumping
 		sprite = sf::IntRect(184, 5, 16, 22);
-		break;
-	case 5: //death
-		sprite = sf::IntRect(196, 34, 16, 24);
 		break;
 	default:
 		sprite = sf::IntRect(10, 7, 14, 20);
@@ -55,16 +55,27 @@ void Bario::setup() {
 
 //return -1 for no collision, 0 for hit enemy, 1 for get hit
 int Bario::attack(Unit* enemy) {
-
-	if(s.getGlobalBounds().intersects((*enemy).s.getGlobalBounds()))
-		return 0;
+	if ((*enemy).state == -1)
+		return -1;
+	if (s.getGlobalBounds().intersects((*enemy).s.getGlobalBounds()))
+	{
+		if (y_vel < 1)
+			return 1;
+		else
+			return 0;
+	}
 	return -1;
 }
 
 
 void Bario::die() {
-	changeState(2);
-	setup();
+	if (state != -1)
+	{
+		changeSprite(-1);
+		state = -1;
+		y_vel = -10;
+		x_vel = 0;
+	}
 }
 
 void Bario::updateView() {
@@ -158,50 +169,62 @@ void Bario::noInput() {
 }
 
 void Bario::update() {
-	if (hitWall())
-		x_vel = 0;
-
-	if (y_vel < -25)
-		y_vel = -25;
-	y_vel += gravity;
-	if (y_vel > 0 && onGround()) {
-		y_vel = 0.;
-	}
-
-	s.move(x_vel, y_vel);
-
-	int newXPos = collideX();
-	if (newXPos == -1)
-		newXPos = s.getPosition().x;
-	else
+	if (state != -1)
 	{
-		int xPosBuffer = s.getLocalBounds().width / 2;
-		if (x_vel > 0)
-			newXPos -= xPosBuffer;
+		if (hitWall())
+			x_vel = 0;
+
+		if (y_vel < -25)
+			y_vel = -25;
+		y_vel += gravity;
+		if (y_vel > 0 && onGround()) {
+			y_vel = 0.;
+		}
+
+		s.move(x_vel, y_vel);
+
+		int newXPos = collideX();
+		if (newXPos == -1)
+			newXPos = s.getPosition().x;
 		else
-			newXPos += xPosBuffer;
-	}
+		{
+			int xPosBuffer = s.getLocalBounds().width / 2;
+			if (x_vel > 0)
+				newXPos -= xPosBuffer;
+			else
+				newXPos += xPosBuffer;
+		}
 
-	int newYPos = collideY();
-	int yPosBuffer = s.getLocalBounds().height / 2;
-	if (y_vel >= 0)
-		newYPos -= yPosBuffer;
-	else
-		newYPos += yPosBuffer;
+		int newYPos = collideY();
+		int yPosBuffer = s.getLocalBounds().height / 2;
+		if (y_vel >= 0)
+			newYPos -= yPosBuffer;
+		else
+			newYPos += yPosBuffer;
 
-	if (!onGround()) {
-		state = 4;
-		changeSprite(state);
+		if (!onGround()) {
+			state = 4;
+			changeSprite(state);
+		}
+		else
+		{
+			s.setPosition(newXPos, newYPos);
+		}
+
+		updateView();
+
+		//Tired of Bario falling forever. Reset when falls to bottom of screen
+		if (s.getPosition().y > w->getSize().y) {
+			die();
+		}
 	}
-	else
+	else if (state == -1)
 	{
-		s.setPosition(newXPos, newYPos);
-	}
+		y_vel += gravity;
+		s.move(x_vel, y_vel);
 
-	updateView();
-
-	//Tired of Bario falling forever. Reset when falls to bottom of screen
-	if (s.getPosition().y > w->getSize().y) {
-		die();
+		if (s.getPosition().y > 1450)
+			setup();
 	}
+	
 }
